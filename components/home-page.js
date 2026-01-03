@@ -1,12 +1,12 @@
 class HomePage extends HTMLElement {
-    constructor() {
-        super();
-        this.attachShadow({ mode: 'open' });
-        this.currentCategory = 'all';
-        this.searchQuery = '';
-        this.render();
-        this.setupEventListeners();
-    }
+  constructor() {
+    super();
+    this.attachShadow({ mode: "open" });
+    this.currentCategory = "all";
+    this.searchQuery = "";
+    this.render();
+    this.setupEventListeners();
+  }
 
   render() {
     this.shadowRoot.innerHTML = /*css*/ `
@@ -552,7 +552,7 @@ class HomePage extends HTMLElement {
                 <div class="search-section">
                     <div class="search-container">
                         <div class="search-icon">🔍</div>
-                        <input type="text" class="search-input" id="search-input" placeholder="Хоол хайх ...">
+                        <input type="text" class="search-input" id="search-input" placeholder="Search for food, restaurant, or cuisine...">
                         <div class="clear-search" id="clear-search">✕</div>
                     </div>
                 </div>
@@ -652,11 +652,9 @@ class HomePage extends HTMLElement {
     this.addEventListener("category-selected", (e) => {
       this.currentCategory = e.detail.categoryId;
 
-            // this.updateActivePills();
-            this.filterFoods();
-            
-        });
-    }
+      this.filterFoods();
+    });
+  }
 
   async loadData() {
     if (window.foodRushApp && window.foodRushApp.currentUser) {
@@ -863,23 +861,23 @@ class HomePage extends HTMLElement {
     }
   }
 
-    addToCart(foodId) {
-        if (!window.foodRushApp) return;
-        
-        const success = window.foodRushApp.addToCart(foodId);
-        
-        if (success) {
-            // Add visual feedback
-            const button = this.shadowRoot.querySelector(`[data-food-id="${foodId}"][data-action="add-to-cart"]`);
-            if (button) {
-                button.style.transform = 'scale(1.2)';
-                setTimeout(() => {
-                    button.style.transform = 'scale(1)';
-                }, 200);
-            }
-        }
+  addToCart(foodId) {
+    if (!window.foodRushApp) return;
+
+    const success = window.foodRushApp.addToCart(foodId);
+
+    if (success) {
+      const button = this.shadowRoot.querySelector(
+        `[data-food-id="${foodId}"][data-action="add-to-cart"]`
+      );
+      if (button) {
+        button.style.transform = "scale(1.2)";
+        setTimeout(() => {
+          button.style.transform = "scale(1)";
+        }, 200);
+      }
     }
-    
+  }
 
   async filterFoods() {
     if (!window.foodRushApp) return;
