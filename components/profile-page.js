@@ -207,6 +207,20 @@ class ProfilePage extends HTMLElement {
                     transform: translateY(-2px);
                     box-shadow: 0 8px 25px rgba(255, 0, 107, 0.3);
                 }
+                .theme-btn {
+                    background: rgba(0, 212, 255, 0.1);
+                    border: 2px solid var(--accent-primary);
+                    color: var(--accent-primary);
+                    transition: all 0.3s ease;
+                }
+
+                .theme-btn:hover {
+                    background: var(--accent-primary);
+                    color: var(--text-primary);
+                    transform: translateY(-2px);
+                    box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+                }
+
 
                 .orders-btn {
                     background: rgba(0, 212, 255, 0.1);
@@ -459,11 +473,16 @@ class ProfilePage extends HTMLElement {
                         
                         <button class="action-btn support-btn" id="support-btn">
                             💬 Customer Support
-                        </button>
+                        </button> 
                         
                         <button class="action-btn logout-btn" id="logout-btn">
                             🚪 Logout
                         </button>
+                        
+                        <button class="action-btn theme-btn" id="theme-btn">
+                            🌙 / ☀️
+                        </button>
+ 
                     </div>
                     
                     <!-- App Info -->
@@ -491,6 +510,13 @@ class ProfilePage extends HTMLElement {
     connectedCallback() {
         this.loadProfileData();
         this.setupEventListeners();
+
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            this.shadowRoot.host.setAttribute('theme', savedTheme);
+        } else {
+            this.shadowRoot.host.setAttribute('theme', 'light');
+        }
     }
 
     setupEventListeners() {
@@ -501,6 +527,10 @@ class ProfilePage extends HTMLElement {
         const cancelEdit = this.shadowRoot.getElementById('cancel-edit');
         const saveEdit = this.shadowRoot.getElementById('save-edit');
         const editModal = this.shadowRoot.getElementById('edit-modal');
+        const themeBtn = this.shadowRoot.getElementById('theme-btn');
+        themeBtn.addEventListener('click', () => {
+            this.toggleTheme();
+        })
 
         logoutBtn.addEventListener('click', () => {
             this.handleLogout();
@@ -537,7 +567,7 @@ class ProfilePage extends HTMLElement {
             if (e.target === editModal) {
                 editModal.classList.remove('show');
             }
-        });
+        });  
     }
 
     async loadProfileData() {
@@ -626,6 +656,22 @@ class ProfilePage extends HTMLElement {
             }
         }
     }
+
+    toggleTheme() {
+        const host = this.shadowRoot.host;
+        const current = host.getAttribute('theme');
+
+        if (current === 'dark') {
+            host.setAttribute('theme', 'light');
+            localStorage.setItem('theme', 'light');
+            console.log("now light");
+        } else {
+            host.setAttribute('theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+            console.log("now dark");
+        }
+    }
+
 
     // showOrders() {
     //     if (window.foodRushApp) {
