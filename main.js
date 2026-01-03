@@ -1,6 +1,6 @@
-import './components/home-page.js';
-import './components/auth-page.js';
-import './components/profile-page.js';
+import './components/lp-home-page.js';
+import './components/lp-auth-page.js';
+import './components/lp-profile-page.js';
 
 class FoodRushApp {
     constructor() {
