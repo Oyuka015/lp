@@ -788,12 +788,12 @@ class FoodRushApp {
         );
     }
 
-    filterByCategory(category) {
-        if (category === 'all') {
-            return this.foodItems;
+        filterByCategory(category) {
+            if (category === 'all') {
+                return this.foodItems;
+            }
+            return this.foodItems.filter(food => food.category === category);
         }
-        return this.foodItems.filter(food => food.category === category);
-    }
 
     // Checkout Process
     async checkout() {

@@ -469,7 +469,7 @@ class HomePage extends HTMLElement {
                     color: var(--text-secondary);
                 }
                 
-                .category-icon.Pizza::before {
+                .category-icon.pizza::before {
                     content: "🍕";
                     font-size:20px;
                 }
@@ -647,8 +647,9 @@ class HomePage extends HTMLElement {
         this.addEventListener('category-selected', (e) => {
             this.currentCategory = e.detail.categoryId;
 
-            this.updateActivePills();
+            // this.updateActivePills();
             this.filterFoods();
+            
         });
     }
 
@@ -700,27 +701,51 @@ class HomePage extends HTMLElement {
     }
 
     renderCategories() {
+        // const categoriesContainer = this.shadowRoot.getElementById('categories-container');
+        // if (!window.foodRushApp || !categoriesContainer) return;
+
+        // const categories = window.foodRushApp.categories;
+        
+        // categoriesContainer.innerHTML = categories.map(category => `
+        //     <category-pill
+        //         category-id="${category.id}"
+        //         name="${category.name}"
+        //         icon="${category.icon}"
+        //         ${category.id === this.currentCategory ? 'active' : ''}>
+        //     </category-pill>
+            
+        // `).join('');
+
+        // // Add click listeners
+        // const categoryPills = categoriesContainer.querySelectorAll('.category-pill');
+        // categoryPills.forEach(pill => {
+        //     pill.addEventListener('click', () => {
+        //         const categoryId = pill.dataset.categoryId;
+        //         this.setActiveCategory(categoryId);
+        //     });
+        // });
         const categoriesContainer = this.shadowRoot.getElementById('categories-container');
         if (!window.foodRushApp || !categoriesContainer) return;
 
         const categories = window.foodRushApp.categories;
-        
+
+        // pill-г div ашиглан гаргаж байна, data-category-id attribute-тэй
         categoriesContainer.innerHTML = categories.map(category => `
-            <category-pill
-                category-id="${category.id}"
-                name="${category.name}"
-                icon="${category.icon}"
-                ${category.id === this.currentCategory ? 'active' : ''}>
-            </category-pill>
-            
+            <div class="category-pill ${category.slug === this.currentCategory ? 'active' : ''}" 
+                data-category-id="${category.id}"
+                data-category-slug="${category.slug}">
+                <span class="category-icon ${category.icon.toLowerCase()}"></span>
+                ${category.name}
+            </div>
         `).join('');
 
-        // Add click listeners
+        // click listener-г shadow DOM-д зөвхөн pill-д нэмнэ
         const categoryPills = categoriesContainer.querySelectorAll('.category-pill');
         categoryPills.forEach(pill => {
             pill.addEventListener('click', () => {
-                const categoryId = pill.dataset.category;
-                this.setActiveCategory(categoryId);
+                const categorySlug = pill.dataset.categorySlug; // slug ашиглана
+                console.log('Category clicked:', categorySlug); // debug
+                this.setActiveCategory(categorySlug);
             });
         });
     }
@@ -743,18 +768,32 @@ class HomePage extends HTMLElement {
     }
 
     setActiveCategory(categoryId) {
-        this.currentCategory = categoryId;
+        // this.currentCategory = categoryId;
         
-        // Update active state
+        // // Update active state
+        // const categoryPills = this.shadowRoot.querySelectorAll('.category-pill');
+        // categoryPills.forEach(pill => {
+        //     if (pill.dataset.categoryId === categoryId) {
+        //         pill.classList.add('active');
+        //     } else {
+        //         pill.classList.remove('active');
+        //     }
+        // });
+        
+        // this.filterFoods();
+        this.currentCategory = categoryId;
+
+        // shadow DOM доторх pill-үүдийн class update
         const categoryPills = this.shadowRoot.querySelectorAll('.category-pill');
         categoryPills.forEach(pill => {
-            if (pill.dataset.category === categoryId) {
+            if (pill.getAttribute('data-category-id') === categoryId) {
                 pill.classList.add('active');
             } else {
                 pill.classList.remove('active');
             }
         });
-        
+
+        // хоолны grid-г filter хийнэ
         this.filterFoods();
     }
 
@@ -859,48 +898,42 @@ class HomePage extends HTMLElement {
     
 
     async filterFoods() {
-        // if (!window.foodRushApp) return;
+        if (!window.foodRushApp) return;
 
-        // let filteredFoods = window.foodRushApp.foodItems;
+        let filteredFoods = window.foodRushApp.foodItems;
 
-        // // Filter by category
-        // if (this.currentCategory !== 'all') {
-        //     filteredFoods = window.foodRushApp.filterByCategory(this.currentCategory);
-        // }
+        try {
+            // Filter by category
+            if (this.currentCategory && this.currentCategory !== 'all') {
+                filteredFoods = filteredFoods.filter(food => {
+                    // food.categoryId байхгүй бол category талбарыг ашиглана
+                    // const foodCategory = food.categoryId || food.category; // categoryId байхгүй бол category field
+                    // return foodCategory === this.currentCategory;
+                    return food.category.toLowerCase() === this.currentCategory.toLowerCase();
+                });
+            }else {
+                // all category → бүх хоолыг харуулна
+                filteredFoods = window.foodRushApp.foodItems;
+            }
 
-        // // Filter by search query
-        // if (this.searchQuery.trim()) {
-        //     filteredFoods = window.foodRushApp.searchFoods(this.searchQuery);
-        // }
+            // Filter by search query
+            if (this.searchQuery.trim()) {
+                const query = this.searchQuery.trim().toLowerCase();
+                filteredFoods = filteredFoods.filter(food =>
+                    food.name.toLowerCase().includes(query) ||
+                    food.description.toLowerCase().includes(query) ||
+                    food.restaurant.toLowerCase().includes(query)
+                );
+            }
 
-        // // Apply both filters if needed
-        // if (this.currentCategory !== 'all' && this.searchQuery.trim()) {
-        //     const categoryFiltered = window.foodRushApp.filterByCategory(this.currentCategory);
-        //     const searchFiltered = window.foodRushApp.searchFoods(this.searchQuery);
-        //     filteredFoods = categoryFiltered.filter(food => 
-        //         searchFiltered.some(searchFood => searchFood.id === food.id)
-        //     );
-        // }
+            this.renderFoodItems(filteredFoods);
 
-        // this.renderFoodItems(filteredFoods);
-        if (!window.apiClient) return;
-
-        const filters = {};
-
-        if (this.currentCategory !== 'all') {
-            filters.category = this.currentCategory; // slug эсвэл id
-        }
-
-        if (this.searchQuery.trim()) {
-            filters.search = this.searchQuery;
-        }
-
-        const res = await window.apiClient.getFoods(filters);
-
-        if (res.success) {
-            this.renderFoodItems(res.data);
+        } catch (error) {
+            console.error('[HomePage Error] filterFoods:', error);
         }
     }
+
+
 }
 
 // Register the component

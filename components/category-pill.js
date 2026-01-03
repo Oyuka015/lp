@@ -39,7 +39,7 @@ class CategoryPill extends HTMLElement {
             </style>
 
             <div class="category-pill">
-                <span class="category-icon ${icon}"></span>
+                <span class="category-icon">${icon}</span>
                 <span>${name}</span>
             </div>  
         `;
