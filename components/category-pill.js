@@ -24,7 +24,7 @@ class CategoryPill extends HTMLElement {
         const icon = this.getAttribute('icon') || '';
         const active = this.hasAttribute('active');
 
-        this.shadowRoot.innerHTML = `
+        this.shadowRoot.innerHTML = /*css */ `
             <style>
                 .category-pill {
                     padding: 8px 16px;
@@ -33,8 +33,12 @@ class CategoryPill extends HTMLElement {
                     display: flex;
                     gap: 8px;
                     align-items: center;
-                    background: ${active ? 'linear-gradient(135deg, #00D4FF, #0099CC)' : 'rgba(26,26,26,0.6)'};
-                    color: ${active ? '#fff' : '#B0B0B0'};
+                    background: ${
+                      active
+                        ? "linear-gradient(135deg, #00D4FF, #0099CC)"
+                        : "rgba(26,26,26,0.6)"
+                    };
+                    color: ${active ? "#fff" : "#B0B0B0"};
                 }
             </style>
 

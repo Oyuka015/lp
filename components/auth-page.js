@@ -1,4 +1,3 @@
-// Authentication Component for FoodRush App
 class AuthPage extends HTMLElement {
     constructor() {
         super();
@@ -21,7 +20,7 @@ class AuthPage extends HTMLElement {
     }
 
     render() {
-        this.shadowRoot.innerHTML = `
+        this.shadowRoot.innerHTML = /*css */ `
             <style>
                 :host {
                     --bg-primary: #0A0A0A;
@@ -276,24 +275,32 @@ class AuthPage extends HTMLElement {
                 </div>
                 
                 <div class="auth-card">
-                    <h2 class="auth-title">${this.mode === 'login' ? 'Welcome Back' : 'Create Account'}</h2>
+                    <h2 class="auth-title">${
+                      this.mode === "login" ? "Welcome Back" : "Create Account"
+                    }</h2>
                     
                     <div id="message-container"></div>
                     
                     <form id="auth-form">
-                        ${this.mode === 'register' ? `
+                        ${
+                          this.mode === "register"
+                            ? `
                             <div class="form-group">
                                 <label class="form-label" for="name">Full Name</label>
                                 <input type="text" id="name" class="form-input" placeholder="Enter your full name" required>
                             </div>
-                        ` : ''}
+                        `
+                            : ""
+                        }
                         
                         <div class="form-group">
                             <label class="form-label" for="email">Email Address</label>
                             <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
                         </div>
                         
-                        ${this.mode === 'register' ? `
+                        ${
+                          this.mode === "register"
+                            ? `
                             <div class="form-group">
                                 <label class="form-label" for="phone">Phone Number</label>
                                 <input type="tel" id="phone" class="form-input" placeholder="Enter your phone number" required>
@@ -303,42 +310,60 @@ class AuthPage extends HTMLElement {
                                 <label class="form-label" for="address">Delivery Address</label>
                                 <input type="text" id="address" class="form-input" placeholder="Enter your delivery address" required>
                             </div>
-                        ` : ''}
+                        `
+                            : ""
+                        }
                         
                         <div class="form-group">
                             <label class="form-label" for="password">Password</label>
                             <input type="password" id="password" class="form-input" placeholder="Enter your password" required minlength="6">
-                            ${this.mode === 'register' ? `
+                            ${
+                              this.mode === "register"
+                                ? `
                                 <div class="password-strength">
                                     <div class="password-strength-bar" id="password-strength-bar"></div>
                                 </div>
-                            ` : ''}
+                            `
+                                : ""
+                            }
                         </div>
                         
-                        ${this.mode === 'register' ? `
+                        ${
+                          this.mode === "register"
+                            ? `
                             <div class="form-group">
                                 <label class="form-label" for="confirm-password">Confirm Password</label>
                                 <input type="password" id="confirm-password" class="form-input" placeholder="Confirm your password" required minlength="6">
                             </div>
-                        ` : ''}
+                        `
+                            : ""
+                        }
                         
                         <button type="submit" class="btn-primary" id="submit-btn">
-                            ${this.mode === 'login' ? 'Sign In' : 'Create Account'}
+                            ${
+                              this.mode === "login"
+                                ? "Sign In"
+                                : "Create Account"
+                            }
                         </button>
                     </form>
                     
                     <div class="auth-footer">
-                        ${this.mode === 'login' ? `
+                        ${
+                          this.mode === "login"
+                            ? `
                             <p style="color: var(--text-secondary); font-size: 14px;">
                                 Don't have an account? 
                                 <span class="auth-link" id="switch-to-register">Sign up here</span>
                             </p>
-                        ` : `
+                        `
+                            : `
                             <p style="color: var(--text-secondary); font-size: 14px;">
                                 Already have an account? 
                                 <span class="auth-link" id="switch-to-login">Sign in here</span>
                             </p>
-                        `}
+                        `
+                        }
                     </div>
                 </div>
             </div>

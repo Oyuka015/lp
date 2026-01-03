@@ -1,4 +1,3 @@
-// Profile Page Component for FoodRush App
 class ProfilePage extends HTMLElement {
     constructor() {
         super();
@@ -7,7 +6,7 @@ class ProfilePage extends HTMLElement {
     }
 
     render() {
-        this.shadowRoot.innerHTML = `
+        this.shadowRoot.innerHTML = /*css */ `
             <style>
                 :host {
                     --bg-primary: #0A0A0A;

@@ -6,7 +6,7 @@ class OrderPage extends HTMLElement {
     }
 
     render() {
-        this.shadowRoot.innerHTML = `
+        this.shadowRoot.innerHTML = /*css */ `
             <style>
                 :host {
                     --bg-primary: #0A0A0A;
