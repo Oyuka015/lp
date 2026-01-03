@@ -552,7 +552,7 @@ class HomePage extends HTMLElement {
                 <div class="search-section">
                     <div class="search-container">
                         <div class="search-icon">🔍</div>
-                        <input type="text" class="search-input" id="search-input" placeholder="Search for food, restaurant, or cuisine...">
+                        <input type="text" class="search-input" id="search-input" placeholder="Хоол хайх ...">
                         <div class="clear-search" id="clear-search">✕</div>
                     </div>
                 </div>
