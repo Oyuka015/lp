@@ -2,7 +2,6 @@ import './components/home-page.js';
 import './components/auth-page.js';
 import './components/profile-page.js';
 
-// FoodRush - Food Delivery App Main JavaScript
 class FoodRushApp {
     constructor() {
         this.currentUser = null;
@@ -24,9 +23,7 @@ class FoodRushApp {
         await this.loadFoodData();
         this.checkAuthState();
         
-        // Load API client
         if (typeof window !== 'undefined') {
-            // Wait for API client to load
             setTimeout(() => {
                 if (window.apiClient) {
                     console.log('API Client loaded successfully');
@@ -36,18 +33,15 @@ class FoodRushApp {
             }, 100);
         }
 
-        // HomePage-д өгөгдөл update хийх
         const homePage = document.querySelector('home-page');
         if (homePage) {
             homePage.renderCategories();
             homePage.renderFoodItems();
         }
         
-        // Initialize first page
         this.navigateTo(this.getCurrentRoute() || 'home');
     }
 
-    // Particle Background Animation
     initParticleBackground() {
         const canvas = document.getElementById('particles-canvas');
         const ctx = canvas.getContext('2d');
@@ -58,7 +52,6 @@ class FoodRushApp {
         const particles = [];
         const particleCount = 50;
         
-        // Create particles
         for (let i = 0; i < particleCount; i++) {
             particles.push({
                 x: Math.random() * canvas.width,
@@ -74,17 +67,14 @@ class FoodRushApp {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
             particles.forEach(particle => {
-                // Update position
                 particle.x += particle.vx;
                 particle.y += particle.vy;
                 
-                // Wrap around edges
                 if (particle.x < 0) particle.x = canvas.width;
                 if (particle.x > canvas.width) particle.x = 0;
                 if (particle.y < 0) particle.y = canvas.height;
                 if (particle.y > canvas.height) particle.y = 0;
                 
-                // Draw particle
                 ctx.beginPath();
                 ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
                 ctx.fillStyle = `rgba(0, 212, 255, ${particle.opacity})`;
@@ -96,14 +86,12 @@ class FoodRushApp {
         
         animateParticles();
         
-        // Resize handler
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         });
     }
 
-    // Routing System
     setupRouting() {
         window.addEventListener('hashchange', () => {
             const route = this.getCurrentRoute();
@@ -137,14 +125,8 @@ class FoodRushApp {
         this.updateNavigation();
         window.location.hash = page;
 
-        // if (page === 'saved') {
-        //     document.dispatchEvent(new CustomEvent('saved-page-show'));
-        // } else if (page === 'cart') {
-        //     document.dispatchEvent(new CustomEvent('cart-page-show'));
-        // }
-
         const container = document.getElementById('page-container');
-        if (container) container.scrollTop = 0; // page-г эхэнд нь гаргана
+        if (container) container.scrollTop = 0; 
         window.scrollTo(0, 0);
 
     }
@@ -152,15 +134,13 @@ class FoodRushApp {
     renderPage(page) {
         const container = document.getElementById('page-container');
         if (!container) {
-            console.error('❌ Page container not found!');
+            console.error('Page container not found!');
             return;
         }
         
-        // Hide all pages
         const pages = container.querySelectorAll('.page-container');
         pages.forEach(p => p.classList.remove('active'));
         
-        // Create or show target page
         let pageElement = container.querySelector(`#page-${page}`);
         
         if (!pageElement) {
@@ -207,7 +187,6 @@ class FoodRushApp {
         return pageElement;
     }
 
-    // Authentication
     isAuthenticated() {
         return !!localStorage.getItem('token');
     }
@@ -246,7 +225,6 @@ class FoodRushApp {
                     return false;
                 }
             } else {
-                // Mock authentication (fallback)
                 const mockUser = {
                     id: 'user-1',
                     name: 'John Doe',
@@ -408,50 +386,13 @@ class FoodRushApp {
     // 
 
     async loadFoodData() {
-        // try {
-        //     if (window.apiClient) {
-        //         // Load categories from API
-        //         const categoriesResponse = await window.apiClient.getCategories();
-        //         if (categoriesResponse.success) {
-        //             this.categories = categoriesResponse.data.map(cat => ({
-        //                 id: cat.slug,
-        //                 name: cat.name,
-        //                 icon: cat.icon
-        //             }));
-        //         }
- 
-        //         // Load foods from API
-        //         const foodsResponse = await window.apiClient.getFoods();
-        //         if (foodsResponse.success) {
-        //             this.foodItems = foodsResponse.data.map(food => ({
-        //                 id: food.id,
-        //                 name: food.name,
-        //                 category: food.category?.slug || 'all',
-        //                 price: food.price,
-        //                 image: food.image,
-        //                 description: food.description,
-        //                 rating: food.rating,
-        //                 deliveryTime: food.deliveryTime,
-        //                 restaurant: food.restaurant?.name || 'Unknown Restaurant'
-        //             }));
-        //         }
-        //     } else {
-        //         // Use mock data (fallback)
-        //         this.loadMockData();
-        //     }
-        // } catch (error) {
-        //     console.error('Failed to load food data:', error);
-        //     // Fallback to mock data on error
-        //     this.loadMockData();
-        // }
-
+       
         try {
             const categoriesRes = await window.apiClient.getCategories();
             if (categoriesRes.success) {
                 this.categories = categoriesRes.data;
             }
 
-            // 👇 cache-тай getFoods
             this.foodItems = await window.foodRushApp.getFoods();
 
         } catch (err) {
@@ -461,7 +402,6 @@ class FoodRushApp {
     }
 
     loadMockData() {
-        // Mock food categories
         this.categories = [
             { id: 'all', name: 'All Food', icon: ' ' },
             { id: 'pizza', name: 'Pizza', icon: ' ' },
@@ -473,7 +413,6 @@ class FoodRushApp {
             { id: 'drinks', name: 'Drinks', icon: ' ' }
         ];
 
-        // Mock food items (same as before)
         this.foodItems = [
             {
                 id: 'food-1',
@@ -588,7 +527,6 @@ class FoodRushApp {
         ];
     }
 
-    // Cart Management
     async addToCart(foodId, quantity = 1) { 
         const token = localStorage.getItem('token');
 
@@ -606,11 +544,10 @@ class FoodRushApp {
             return false;
         }
 
-        await this.syncCartFromServer(); // ⬅️ маш чухал
+        await this.syncCartFromServer();
         this.showNotification('Added to cart!', 'success');
         return true;
     }
-    //additional...
     async syncCartFromServer() {
         const token = localStorage.getItem('token');
 

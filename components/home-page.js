@@ -1,18 +1,15 @@
-// Home Page Component for FoodRush App
 class HomePage extends HTMLElement {
-    constructor() {
-        super();
-        this.attachShadow({ mode: 'open' });
-        this.currentCategory = 'all';
-        this.searchQuery = '';
-        // this.theme = 'dark'; // default
-        // this.setAttribute('theme', this.theme);
-        this.render();
-        this.setupEventListeners();
-    }
+  constructor() {
+    super();
+    this.attachShadow({ mode: "open" });
+    this.currentCategory = "all";
+    this.searchQuery = "";
+    this.render();
+    this.setupEventListeners();
+  }
 
-    render() {
-        this.shadowRoot.innerHTML = `
+  render() {
+    this.shadowRoot.innerHTML = /*css*/ `
             <style>
                 :host {
                     display: block;
@@ -61,7 +58,6 @@ class HomePage extends HTMLElement {
                 }
                 .hidden { display: none; }
 
-                /* Header Section */
                 .header-section {
                     margin-bottom: 24px;
                 }
@@ -117,7 +113,6 @@ class HomePage extends HTMLElement {
                     font-weight: 600;
                 }
 
-                /* Search Section */
                 .search-section {
                     margin-bottom: 24px;
                 }
@@ -179,7 +174,6 @@ class HomePage extends HTMLElement {
                     display: block;
                 }
 
-                /* Categories Section */
                 .categories-section {
                     margin-bottom: 24px;
                 }
@@ -242,8 +236,6 @@ class HomePage extends HTMLElement {
                     color: var(--text-primary);
                     box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
                 }
-
-                /* Food Grid */
                 .food-section {
                     margin-bottom: 24px;
                 }
@@ -387,7 +379,6 @@ class HomePage extends HTMLElement {
                     box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4);
                 }
 
-                /* Empty State */
                 .empty-state {
                     text-align: center;
                     padding: 60px 20px;
@@ -413,7 +404,6 @@ class HomePage extends HTMLElement {
                     opacity: 0.7;
                 }
 
-                /* Loading State */
                 .loading-container {
                     display: flex;
                     justify-content: center;
@@ -434,7 +424,6 @@ class HomePage extends HTMLElement {
                     to { transform: rotate(360deg); }
                 }
 
-                /* Address Modal */
                 .modal-overlay {
                     position: fixed;
                     top: 0;
@@ -548,41 +537,34 @@ class HomePage extends HTMLElement {
             </style>
             
             <div class="home-container">
-                <!-- Header Section -->
                 <div class="header-section">
-                    <h1 class="welcome-text">What would you like to eat?</h1>
+                    <h1 class="welcome-text">Тавтай морил!</h1>
                     
                     <div class="delivery-address" id="address-display">
                         <div class="address-icon">📍</div>
                         <div class="address-text" id="current-address">
-                            Loading address...
+                            хаягийг уншиж байна...
                         </div>
-                        <div class="address-edit">Change</div>
+                        <div class="address-edit">Өөрчлөх</div>
                     </div>
                 </div>
                 
-                <!-- Search Section -->
                 <div class="search-section">
                     <div class="search-container">
                         <div class="search-icon">🔍</div>
-                        <input type="text" class="search-input" id="search-input" placeholder="Search for food...">
+                        <input type="text" class="search-input" id="search-input" placeholder="Search for food, restaurant, or cuisine...">
                         <div class="clear-search" id="clear-search">✕</div>
                     </div>
                 </div>
                 
-                <!-- Categories Section -->
                 <div class="categories-section">
-                    <h2 class="section-title">Categories</h2>
+                    <h2 class="section-title">Ангилал</h2>
                     <div class="categories-container" id="categories-container">
-                        <!-- Categories will be dynamically loaded -->
                     </div>
                 </div>
-                
-                <!-- Food Grid -->
                 <div class="food-section">
-                    <h2 class="section-title">Available Foods</h2>
+                    <h2 class="section-title">Хоол</h2>
                     <div class="food-grid" id="food-grid">
-                        <!-- Food items will be dynamically loaded -->
                     </div>
                     
                     <div class="loading-container" id="loading-container">
@@ -591,227 +573,221 @@ class HomePage extends HTMLElement {
                     
                     <div class="empty-state hidden" id="empty-state">
                         <div class="empty-icon">🍽️</div>
-                        <div class="empty-text">No food found</div>
-                        <div class="empty-subtext">Try adjusting your search or category filter</div>
+                        <div class="empty-text">Хоол олдсонгүй!</div>
                     </div>
                 </div>
             </div>
             
-            <!-- Address Modal -->
             <div class="modal-overlay" id="address-modal">
                 <div class="modal-content">
-                    <h3 class="modal-title">Update Delivery Address</h3>
+                    <h3 class="modal-title">Хүргэх хаягийг өөрчлөх</h3>
                     <input type="text" class="form-input" id="new-address" placeholder="Enter new delivery address">
                     <div class="modal-actions">
-                        <button class="modal-btn modal-btn-secondary" id="cancel-address">Cancel</button>
-                        <button class="modal-btn modal-btn-primary" id="save-address">Save Address</button>
+                        <button class="modal-btn modal-btn-secondary" id="cancel-address">Цуцлах</button>
+                        <button class="modal-btn modal-btn-primary" id="save-address">Хадгалах</button>
                     </div>
                 </div>
             </div>
         `;
+  }
+
+  setupEventListeners() {
+    const searchInput = this.shadowRoot.getElementById("search-input");
+    const clearSearch = this.shadowRoot.getElementById("clear-search");
+
+    searchInput.addEventListener("input", (e) => {
+      this.searchQuery = e.target.value;
+      this.filterFoods();
+
+      if (e.target.value) {
+        clearSearch.classList.add("show");
+      } else {
+        clearSearch.classList.remove("show");
+      }
+    });
+
+    clearSearch.addEventListener("click", () => {
+      searchInput.value = "";
+      this.searchQuery = "";
+      this.filterFoods();
+      clearSearch.classList.remove("show");
+    });
+
+    const addressDisplay = this.shadowRoot.getElementById("address-display");
+    const addressModal = this.shadowRoot.getElementById("address-modal");
+    const cancelAddress = this.shadowRoot.getElementById("cancel-address");
+    const saveAddress = this.shadowRoot.getElementById("save-address");
+    const newAddressInput = this.shadowRoot.getElementById("new-address");
+
+    addressDisplay.addEventListener("click", () => {
+      const currentAddress =
+        this.shadowRoot.getElementById("current-address").textContent;
+      newAddressInput.value = currentAddress;
+      addressModal.classList.add("show");
+    });
+
+    cancelAddress.addEventListener("click", () => {
+      addressModal.classList.remove("show");
+    });
+
+    saveAddress.addEventListener("click", () => {
+      const newAddress = newAddressInput.value.trim();
+      if (newAddress) {
+        this.updateAddress(newAddress);
+        addressModal.classList.remove("show");
+      }
+    });
+
+    addressModal.addEventListener("click", (e) => {
+      if (e.target === addressModal) {
+        addressModal.classList.remove("show");
+      }
+    });
+  }
+
+  connectedCallback() {
+    this.loadData();
+    this.currentCategory = "all";
+
+    this.addEventListener("category-selected", (e) => {
+      this.currentCategory = e.detail.categoryId;
+
+      this.filterFoods();
+    });
+  }
+
+  async loadData() {
+    if (window.foodRushApp && window.foodRushApp.currentUser) {
+      this.updateAddressDisplay();
+    } else {
+      const currentAddress = this.shadowRoot.getElementById("current-address");
+      currentAddress.textContent = "Set your delivery address";
     }
 
-    setupEventListeners() {
-        // Search functionality
-        const searchInput = this.shadowRoot.getElementById('search-input');
-        const clearSearch = this.shadowRoot.getElementById('clear-search');
-        
-        searchInput.addEventListener('input', (e) => {
-            this.searchQuery = e.target.value;
-            this.filterFoods();
-            
-            if (e.target.value) {
-                clearSearch.classList.add('show');
-            } else {
-                clearSearch.classList.remove('show');
-            }
-        });
-
-        clearSearch.addEventListener('click', () => {
-            searchInput.value = '';
-            this.searchQuery = '';
-            this.filterFoods();
-            clearSearch.classList.remove('show');
-        });
-
-        // Address change functionality
-        const addressDisplay = this.shadowRoot.getElementById('address-display');
-        const addressModal = this.shadowRoot.getElementById('address-modal');
-        const cancelAddress = this.shadowRoot.getElementById('cancel-address');
-        const saveAddress = this.shadowRoot.getElementById('save-address');
-        const newAddressInput = this.shadowRoot.getElementById('new-address');
-
-        addressDisplay.addEventListener('click', () => {
-            const currentAddress = this.shadowRoot.getElementById('current-address').textContent;
-            newAddressInput.value = currentAddress;
-            addressModal.classList.add('show');
-        });
-
-        cancelAddress.addEventListener('click', () => {
-            addressModal.classList.remove('show');
-        });
-
-        saveAddress.addEventListener('click', () => {
-            const newAddress = newAddressInput.value.trim();
-            if (newAddress) {
-                this.updateAddress(newAddress);
-                addressModal.classList.remove('show');
-            }
-        });
-
-        // Close modal on overlay click
-        addressModal.addEventListener('click', (e) => {
-            if (e.target === addressModal) {
-                addressModal.classList.remove('show');
-            }
-        });
+    this.updateAddressDisplay();
+    this.renderCategories();
+    this.renderFoodItems();
+    const loadingContainer =
+      this.shadowRoot.getElementById("loading-container");
+    if (loadingContainer) {
+      loadingContainer.style.display = "none";
     }
+  }
 
-    connectedCallback() {
-        this.loadData();
-        this.currentCategory = 'all';
-
-        this.addEventListener('category-selected', (e) => {
-            this.currentCategory = e.detail.categoryId;
-
-            // this.updateActivePills();
-            this.filterFoods();
-            
-        });
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            this.shadowRoot.host.setAttribute('theme', savedTheme);
-        } else {
-            this.shadowRoot.host.setAttribute('theme', 'light');
-        }
+  updateAddressDisplay() {
+    const currentAddress = this.shadowRoot.getElementById("current-address");
+    if (window.foodRushApp && window.foodRushApp.currentUser) {
+      currentAddress.textContent =
+        window.foodRushApp.currentUser.address || "No address set";
+    } else {
+      currentAddress.textContent = "Set your delivery address";
     }
+  }
 
-    async loadData() {
-        // if (!window.foodRushApp) return;
-        // Хэрэглэгчийн мэдээлэл байгаа эсэхийг шалгаад update
-        if (window.foodRushApp && window.foodRushApp.currentUser) {
-            this.updateAddressDisplay();
-        } else {
-            const currentAddress = this.shadowRoot.getElementById('current-address');
-            currentAddress.textContent = 'Set your delivery address';
-        }
+  updateAddress(newAddress) {
+    if (window.foodRushApp.currentUser) {
+      window.foodRushApp.currentUser.address = newAddress;
+      localStorage.setItem(
+        "user",
+        JSON.stringify(window.foodRushApp.currentUser)
+      );
+      this.updateAddressDisplay();
 
-        // Load current user address
-        this.updateAddressDisplay();
-        
-        // Load categories
-        this.renderCategories();
-        
-        // Load food items
-        this.renderFoodItems();
-        
-        // Hide loading
-        const loadingContainer = this.shadowRoot.getElementById('loading-container');
-        if (loadingContainer) {
-            loadingContainer.style.display = 'none';
-        }
+      if (window.foodRushApp) {
+        window.foodRushApp.showNotification(
+          "Address updated successfully!",
+          "success"
+        );
+      }
     }
+  }
 
-    updateAddressDisplay() {
-        const currentAddress = this.shadowRoot.getElementById('current-address');
-        if (window.foodRushApp && window.foodRushApp.currentUser) {
-            currentAddress.textContent = window.foodRushApp.currentUser.address || 'No address set';
-        } else {
-            currentAddress.textContent = 'Set your delivery address';
-        }
-    } 
+  renderCategories() {
+    const categoriesContainer = this.shadowRoot.getElementById(
+      "categories-container"
+    );
+    if (!window.foodRushApp || !categoriesContainer) return;
 
-    updateAddress(newAddress) {
-        if (window.foodRushApp.currentUser) {
-            window.foodRushApp.currentUser.address = newAddress;
-            localStorage.setItem('user', JSON.stringify(window.foodRushApp.currentUser));
-            this.updateAddressDisplay();
-            
-            if (window.foodRushApp) {
-                window.foodRushApp.showNotification('Address updated successfully!', 'success');
-            }
-        }
-    }
+    const categories = window.foodRushApp.categories;
 
-    renderCategories() { 
-        const categoriesContainer = this.shadowRoot.getElementById('categories-container');
-        if (!window.foodRushApp || !categoriesContainer) return;
-
-        const categories = window.foodRushApp.categories;
-
-        // pill-г div ашиглан гаргаж байна, data-category-id attribute-тэй
-        categoriesContainer.innerHTML = categories.map(category => `
-            <div class="category-pill ${category.slug === this.currentCategory ? 'active' : ''}" 
+    categoriesContainer.innerHTML = categories
+      .map(
+        (category) => `
+            <div class="category-pill ${
+              category.slug === this.currentCategory ? "active" : ""
+            }" 
                 data-category-id="${category.id}"
                 data-category-slug="${category.slug}">
                 <span class="category-icon ${category.icon.toLowerCase()}"></span>
                 ${category.name}
             </div>
-        `).join('');
+        `
+      )
+      .join("");
 
-        // click listener-г shadow DOM-д зөвхөн pill-д нэмнэ
-        const categoryPills = categoriesContainer.querySelectorAll('.category-pill');
-        categoryPills.forEach(pill => {
-            pill.addEventListener('click', () => {
-                const categorySlug = pill.dataset.categorySlug; 
-                this.setActiveCategory(categorySlug);
-            });
-        });
+    const categoryPills =
+      categoriesContainer.querySelectorAll(".category-pill");
+    categoryPills.forEach((pill) => {
+      pill.addEventListener("click", () => {
+        const categorySlug = pill.dataset.categorySlug; 
+        console.log("Category clicked:", categorySlug);
+        this.setActiveCategory(categorySlug);
+      });
+    });
+  }
+  updateActiveCategory(selectedCategoryId) {
+    const pills = this.querySelectorAll("category-pill");
+
+    pills.forEach((pill) => {
+      pill.setActive(pill.getAttribute("category-id") === selectedCategoryId);
+    });
+  }
+  updateActivePills() {
+    this.querySelectorAll("category-pill").forEach((pill) => {
+      pill.toggleAttribute(
+        "active",
+        pill.getAttribute("category-id") === this.currentCategory
+      );
+    });
+  }
+
+  setActiveCategory(categoryId) {
+    this.currentCategory = categoryId;
+    const categoryPills = this.shadowRoot.querySelectorAll(".category-pill");
+    categoryPills.forEach((pill) => {
+      if (pill.getAttribute("data-category-id") === categoryId) {
+        pill.classList.add("active");
+      } else {
+        pill.classList.remove("active");
+      }
+    });
+
+    this.filterFoods();
+  }
+
+  renderFoodItems(foods = null) {
+    const foodGrid = this.shadowRoot.getElementById("food-grid");
+    const emptyState = this.shadowRoot.getElementById("empty-state");
+
+    if (!window.foodRushApp || !foodGrid) return;
+
+    const foodItems = foods || window.foodRushApp.foodItems;
+
+    if (foodItems.length === 0) {
+      foodGrid.innerHTML = "";
+      emptyState.classList.remove("hidden");
+      return;
     }
-    updateActiveCategory(selectedCategoryId) {
-        const pills = this.querySelectorAll('category-pill');
 
-        pills.forEach(pill => {
-            pill.setActive(
-                pill.getAttribute('category-id') === selectedCategoryId
-            );
-        });
-    }
-    updateActivePills() {
-        this.querySelectorAll('category-pill').forEach(pill => {
-            pill.toggleAttribute(
-                'active',
-                pill.getAttribute('category-id') === this.currentCategory
-            );
-        });
-    }
+    emptyState.classList.add("hidden");
 
-    setActiveCategory(categoryId) { 
-        this.currentCategory = categoryId;
-
-        // shadow DOM доторх pill-үүдийн class update
-        const categoryPills = this.shadowRoot.querySelectorAll('.category-pill');
-        categoryPills.forEach(pill => {
-            if (pill.getAttribute('data-category-id') === categoryId) {
-                pill.classList.add('active');
-            } else {
-                pill.classList.remove('active');
-            }
-        });
-
-        // хоолны grid-г filter хийнэ
-        this.filterFoods();
-    }
-
-    renderFoodItems(foods = null) {
-        const foodGrid = this.shadowRoot.getElementById('food-grid');
-        const emptyState = this.shadowRoot.getElementById('empty-state');
-        
-        if (!window.foodRushApp || !foodGrid) return;
-
-        const foodItems = foods || window.foodRushApp.foodItems;
-        
-        if (foodItems.length === 0) {
-            foodGrid.innerHTML = '';
-            emptyState.classList.remove('hidden');
-            return;
-        }
-
-        emptyState.classList.add('hidden');
-        
-        foodGrid.innerHTML = foodItems.map(food => `
+    foodGrid.innerHTML = foodItems
+      .map(
+        (food) => `
             <div class="food-card" data-food-id="${food.id}">
-                <img src="${food.image}" alt="${food.name}" class="food-image" loading="lazy">
+                <img src="${food.image}" alt="${
+          food.name
+        }" class="food-image" loading="lazy">
                 <div class="food-info">
                     <div class="food-header">
                         <div>
@@ -828,113 +804,111 @@ class HomePage extends HTMLElement {
                             <span>• ${food.deliveryTime}</span>
                         </div>
                         <div class="food-actions">
-                            <button class="action-btn save-btn ${window.foodRushApp && window.foodRushApp.isItemSaved(food.id) ? 'saved' : ''}" 
-                                    data-food-id="${food.id}" data-action="save">
+                            <button class="action-btn save-btn ${
+                              window.foodRushApp &&
+                              window.foodRushApp.isItemSaved(food.id)
+                                ? "saved"
+                                : ""
+                            }" 
+                                    data-food-id="${
+                                      food.id
+                                    }" data-action="save">
                                 ❤️
                             </button>
-                            <button class="action-btn cart-btn" data-food-id="${food.id}" data-action="add-to-cart">
+                            <button class="action-btn cart-btn" data-food-id="${
+                              food.id
+                            }" data-action="add-to-cart">
                                 🛒
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
-        `).join('');
+        `
+      )
+      .join("");
 
-        // Add click listeners for food card actions
-        this.setupFoodCardListeners();
+    this.setupFoodCardListeners();
+  }
+
+  setupFoodCardListeners() {
+    const foodGrid = this.shadowRoot.getElementById("food-grid");
+
+    foodGrid.addEventListener("click", (e) => {
+      const button = e.target.closest(".action-btn");
+      if (!button) return;
+
+      const foodId = button.dataset.foodId;
+      const action = button.dataset.action;
+
+      if (action === "save") {
+        this.toggleSaveFood(foodId, button);
+      } else if (action === "add-to-cart") {
+        this.addToCart(foodId);
+      }
+    });
+  }
+
+  toggleSaveFood(foodId, button) {
+    if (!window.foodRushApp) return;
+
+    const isSaved = window.foodRushApp.toggleSaveItem(foodId);
+
+    if (isSaved) {
+      button.classList.add("saved");
+    } else {
+      button.classList.remove("saved");
     }
+  }
 
-    setupFoodCardListeners() {
-        const foodGrid = this.shadowRoot.getElementById('food-grid');
-        
-        foodGrid.addEventListener('click', (e) => {
-            const button = e.target.closest('.action-btn');
-            if (!button) return;
-            
-            const foodId = button.dataset.foodId;
-            const action = button.dataset.action;
-            
-            if (action === 'save') {
-                this.toggleSaveFood(foodId, button);
-            } else if (action === 'add-to-cart') {
-                this.addToCart(foodId);
-            }
+  addToCart(foodId) {
+    if (!window.foodRushApp) return;
+
+    const success = window.foodRushApp.addToCart(foodId);
+
+    if (success) {
+      const button = this.shadowRoot.querySelector(
+        `[data-food-id="${foodId}"][data-action="add-to-cart"]`
+      );
+      if (button) {
+        button.style.transform = "scale(1.2)";
+        setTimeout(() => {
+          button.style.transform = "scale(1)";
+        }, 200);
+      }
+    }
+  }
+
+  async filterFoods() {
+    if (!window.foodRushApp) return;
+
+    let filteredFoods = window.foodRushApp.foodItems;
+
+    try {
+      if (this.currentCategory && this.currentCategory !== "all") {
+        filteredFoods = filteredFoods.filter((food) => {
+          return (
+            food.category.toLowerCase() === this.currentCategory.toLowerCase()
+          );
         });
+      } else {
+        filteredFoods = window.foodRushApp.foodItems;
+      }
+
+      if (this.searchQuery.trim()) {
+        const query = this.searchQuery.trim().toLowerCase();
+        filteredFoods = filteredFoods.filter(
+          (food) =>
+            food.name.toLowerCase().includes(query) ||
+            food.description.toLowerCase().includes(query) ||
+            food.restaurant.toLowerCase().includes(query)
+        );
+      }
+
+      this.renderFoodItems(filteredFoods);
+    } catch (error) {
+      console.error("[HomePage Error] filterFoods:", error);
     }
-
-    toggleSaveFood(foodId, button) {
-        if (!window.foodRushApp) return;
-        
-        const isSaved = window.foodRushApp.toggleSaveItem(foodId);
-        
-        if (isSaved) {
-            button.classList.add('saved');
-        } else {
-            button.classList.remove('saved');
-        }
-    }
-
-    addToCart(foodId) {
-        if (!window.foodRushApp) return;
-        
-        const success = window.foodRushApp.addToCart(foodId);
-        
-        if (success) {
-            // Add visual feedback
-            const button = this.shadowRoot.querySelector(`[data-food-id="${foodId}"][data-action="add-to-cart"]`);
-            if (button) {
-                button.style.transform = 'scale(1.2)';
-                setTimeout(() => {
-                    button.style.transform = 'scale(1)';
-                }, 200);
-            }
-        }
-    }
-    toggleTheme() {
-        this.theme = this.theme === 'dark' ? 'light' : 'dark';
-        this.setAttribute('theme', this.theme);
-    }
-    
-
-    async filterFoods() {
-        if (!window.foodRushApp) return;
-
-        let filteredFoods = window.foodRushApp.foodItems;
-
-        try {
-            // Filter by category
-            if (this.currentCategory && this.currentCategory !== 'all') {
-                filteredFoods = filteredFoods.filter(food => {
-                    // food.categoryId байхгүй бол category талбарыг ашиглана
-                    // const foodCategory = food.categoryId || food.category; // categoryId байхгүй бол category field
-                    // return foodCategory === this.currentCategory;
-                    return food.category.toLowerCase() === this.currentCategory.toLowerCase();
-                });
-            }else {
-                // all category → бүх хоолыг харуулна
-                filteredFoods = window.foodRushApp.foodItems;
-            }
-
-            // Filter by search query
-            if (this.searchQuery.trim()) {
-                const query = this.searchQuery.trim().toLowerCase();
-                filteredFoods = filteredFoods.filter(food =>
-                    food.name.toLowerCase().includes(query) ||
-                    food.description.toLowerCase().includes(query) ||
-                    food.restaurant.toLowerCase().includes(query)
-                );
-            }
-
-            this.renderFoodItems(filteredFoods);
-
-        } catch (error) {
-            console.error('[HomePage Error] filterFoods:', error);
-        }
-    }
-
-
+  }
 }
-
-// Register the component
-customElements.define('home-page', HomePage);
+customElements.define("home-page", HomePage);

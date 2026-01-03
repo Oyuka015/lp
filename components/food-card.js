@@ -1,4 +1,3 @@
-// Food Card Component for FoodRush App
 class FoodCard extends HTMLElement {
     constructor() {
         super();
@@ -31,7 +30,7 @@ class FoodCard extends HTMLElement {
     }
 
     render() {
-        this.shadowRoot.innerHTML = `
+      this.shadowRoot.innerHTML = /*css */ `
             <style>
                 :host {
                     --bg-primary: #0A0A0A;

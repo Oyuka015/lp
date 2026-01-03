@@ -8,7 +8,7 @@ class AppNav extends HTMLElement {
     }
 
     render() {
-        this.shadowRoot.innerHTML = `
+        this.shadowRoot.innerHTML = /*css */`
             <style>
                 :host {
                     --bg-primary: #0A0A0A;
@@ -138,7 +138,6 @@ class AppNav extends HTMLElement {
                     100% { transform: scale(1); }
                 }
 
-                /* SVG Icons */
                 .icon-home {
                     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='white' viewBox='0 0 24 24'%3E%3Cpath d='M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z'/%3E%3C/svg%3E");
                 }
@@ -159,7 +158,6 @@ class AppNav extends HTMLElement {
                     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='white' viewBox='0 0 24 24'%3E%3Cpath d='M11 7L9.6 8.4l2.6 2.6H2v2h10.2l-2.6 2.6L11 17l5-5-5-5zm9 12h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-8v2h8v14z'/%3E%3C/svg%3E");
                 }
 
-                /* Responsive Design */
                 @media (max-width: 480px) {
                     .nav-item {
                         padding: 6px 8px;
@@ -180,17 +178,17 @@ class AppNav extends HTMLElement {
                 <div class="nav-items">
                     <a href="#home" class="nav-item" data-page="home">
                         <div class="nav-icon icon-home"></div>
-                        <span class="nav-label">Home</span>
+                        <span class="nav-label">Нүүр</span>
                     </a>
                     
                     <a href="#saved" class="nav-item" data-page="saved">
                         <div class="nav-icon icon-saved"></div>
-                        <span class="nav-label">Saved</span>
+                        <span class="nav-label">Хадгалсан</span>
                     </a>
                     
                     <a href="#cart" class="nav-item" data-page="cart">
                         <div class="nav-icon icon-cart"></div>
-                        <span class="nav-label">Cart</span>
+                        <span class="nav-label">Сагс</span>
                         <span class="cart-counter" style="display: none;">0</span>
                     </a>
                     
@@ -205,33 +203,27 @@ class AppNav extends HTMLElement {
 
     setupEventListeners() {
         const navItems = this.shadowRoot.querySelectorAll('.nav-item');
-        // const navItems = document.querySelectorAll('.nav-item');
-        
         navItems.forEach(item => {
             item.addEventListener('click', (e) => {
                 e.preventDefault();
                 const page = item.dataset.page;
-                
                 if (window.foodRushApp) {
                     window.foodRushApp.navigateTo(page);
                 }
             });
         });
     }
-
     updateCartCounter(count) {
         const counter = this.shadowRoot.querySelector('.cart-counter');
         if (counter) {
             counter.textContent = count;
             counter.style.display = count > 0 ? 'flex' : 'none';
-            
             if (count > 0) {
                 counter.classList.add('pulse');
                 setTimeout(() => counter.classList.remove('pulse'), 300);
             }
         }
     }
-
     setActivePage(page) {
         const navItems = this.shadowRoot.querySelectorAll('.nav-item');
         navItems.forEach(item => {
@@ -243,6 +235,4 @@ class AppNav extends HTMLElement {
         });
     }
 }
-
-// Register the component
 customElements.define('app-nav', AppNav);

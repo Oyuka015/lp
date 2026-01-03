@@ -1,4 +1,3 @@
-// Saved Page Component for FoodRush App
 class SavedPage extends HTMLElement {
     constructor() {
         super();
@@ -7,7 +6,7 @@ class SavedPage extends HTMLElement {
     }
 
     render() {
-        this.shadowRoot.innerHTML = `
+        this.shadowRoot.innerHTML = /*css */ `
             <style>
                 :host {
                     --bg-primary: #0A0A0A;
