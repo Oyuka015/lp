@@ -733,30 +733,7 @@ class HomePage extends HTMLElement {
         }
     }
 
-    renderCategories() {
-        // const categoriesContainer = this.shadowRoot.getElementById('categories-container');
-        // if (!window.foodRushApp || !categoriesContainer) return;
-
-        // const categories = window.foodRushApp.categories;
-        
-        // categoriesContainer.innerHTML = categories.map(category => `
-        //     <category-pill
-        //         category-id="${category.id}"
-        //         name="${category.name}"
-        //         icon="${category.icon}"
-        //         ${category.id === this.currentCategory ? 'active' : ''}>
-        //     </category-pill>
-            
-        // `).join('');
-
-        // // Add click listeners
-        // const categoryPills = categoriesContainer.querySelectorAll('.category-pill');
-        // categoryPills.forEach(pill => {
-        //     pill.addEventListener('click', () => {
-        //         const categoryId = pill.dataset.categoryId;
-        //         this.setActiveCategory(categoryId);
-        //     });
-        // });
+    renderCategories() { 
         const categoriesContainer = this.shadowRoot.getElementById('categories-container');
         if (!window.foodRushApp || !categoriesContainer) return;
 
@@ -776,8 +753,7 @@ class HomePage extends HTMLElement {
         const categoryPills = categoriesContainer.querySelectorAll('.category-pill');
         categoryPills.forEach(pill => {
             pill.addEventListener('click', () => {
-                const categorySlug = pill.dataset.categorySlug; // slug ашиглана
-                console.log('Category clicked:', categorySlug); // debug
+                const categorySlug = pill.dataset.categorySlug; 
                 this.setActiveCategory(categorySlug);
             });
         });
@@ -800,20 +776,7 @@ class HomePage extends HTMLElement {
         });
     }
 
-    setActiveCategory(categoryId) {
-        // this.currentCategory = categoryId;
-        
-        // // Update active state
-        // const categoryPills = this.shadowRoot.querySelectorAll('.category-pill');
-        // categoryPills.forEach(pill => {
-        //     if (pill.dataset.categoryId === categoryId) {
-        //         pill.classList.add('active');
-        //     } else {
-        //         pill.classList.remove('active');
-        //     }
-        // });
-        
-        // this.filterFoods();
+    setActiveCategory(categoryId) { 
         this.currentCategory = categoryId;
 
         // shadow DOM доторх pill-үүдийн class update

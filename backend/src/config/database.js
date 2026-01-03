@@ -3,7 +3,7 @@ require('dotenv').config({ path: '../../.env' });
 
 const dbConfig = {
     host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 5432,
+    port: process.env.DB_PORT || 5433,
     database: process.env.DB_NAME || 'foodrush_db',
     user: process.env.DB_USER || 'postgres',
     password: String(process.env.DB_PASSWORD || '1234'),
