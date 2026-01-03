@@ -5,6 +5,8 @@ class HomePage extends HTMLElement {
         this.attachShadow({ mode: 'open' });
         this.currentCategory = 'all';
         this.searchQuery = '';
+        // this.theme = 'dark'; // default
+        // this.setAttribute('theme', this.theme);
         this.render();
         this.setupEventListeners();
     }
@@ -13,6 +15,13 @@ class HomePage extends HTMLElement {
         this.shadowRoot.innerHTML = `
             <style>
                 :host {
+                    display: block;
+                    min-height: 100vh;
+                    background-color: var(--bg-primary);
+                    color: var(--text-primary);
+                    font-family: var(--font-body);
+                }
+                :host([theme="dark"]) {
                     --bg-primary: #0A0A0A;
                     --bg-secondary: #1A1A1A;
                     --accent-primary: #00D4FF;
@@ -21,6 +30,23 @@ class HomePage extends HTMLElement {
                     --text-secondary: #B0B0B0;
                     --font-display: 'Orbitron', monospace;
                     --font-body: 'Inter', sans-serif;
+                    
+                    --bg-other-1: rgba(26, 26, 26, 0.6);
+                    --bg-other-2: rgba(26, 26, 26, 0.8);
+                }
+
+                :host([theme="light"]) {
+                    --bg-primary: #dadada;
+                    --bg-secondary: #F5F5F5;
+                    --accent-primary: #00D4FF;
+                    --accent-secondary: #FF006B;
+                    --text-primary: #000000;
+                    --text-secondary: #555555;
+                    --font-display: 'Orbitron', monospace;
+                    --font-body: 'Inter', sans-serif;
+
+                    --bg-other-1: rgba(245, 245, 245, 0.6);
+                    --bg-other-2: rgba(245, 245, 245, 0.8);
                 }
 
                 * {
@@ -33,6 +59,7 @@ class HomePage extends HTMLElement {
                     min-height: 100vh;
                     padding: 20px 16px 80px;
                 }
+                .hidden { display: none; }
 
                 /* Header Section */
                 .header-section {
@@ -50,8 +77,8 @@ class HomePage extends HTMLElement {
 
                 .delivery-address {
                     display: flex;
-                    align-items: center;
-                    background: rgba(26, 26, 26, 0.6);
+                    align-items: center; 
+                    background: var(--bg-other-1);
                     border: 1px solid rgba(0, 212, 255, 0.2);
                     border-radius: 12px;
                     padding: 12px 16px;
@@ -102,7 +129,7 @@ class HomePage extends HTMLElement {
                 .search-input {
                     width: 100%;
                     padding: 16px 20px 16px 50px;
-                    background: rgba(26, 26, 26, 0.8);
+                    background: var(--bg-other-2);
                     border: 2px solid transparent;
                     border-radius: 12px;
                     color: var(--text-primary);
@@ -191,7 +218,7 @@ class HomePage extends HTMLElement {
                 .category-pill {
                     flex-shrink: 0;
                     padding: 8px 16px;
-                    background: rgba(26, 26, 26, 0.6);
+                    background: var(--bg-other-1);
                     border: 1px solid rgba(0, 212, 255, 0.2);
                     border-radius: 20px;
                     color: var(--text-secondary);
@@ -228,7 +255,7 @@ class HomePage extends HTMLElement {
                 }
 
                 .food-card {
-                    background: rgba(26, 26, 26, 0.8);
+                    background: var(--bg-other-2);
                     border: 1px solid rgba(0, 212, 255, 0.1);
                     border-radius: 12px;
                     overflow: hidden;
@@ -538,7 +565,7 @@ class HomePage extends HTMLElement {
                 <div class="search-section">
                     <div class="search-container">
                         <div class="search-icon">🔍</div>
-                        <input type="text" class="search-input" id="search-input" placeholder="Search for food, restaurant, or cuisine...">
+                        <input type="text" class="search-input" id="search-input" placeholder="Search for food...">
                         <div class="clear-search" id="clear-search">✕</div>
                     </div>
                 </div>
@@ -651,6 +678,12 @@ class HomePage extends HTMLElement {
             this.filterFoods();
             
         });
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            this.shadowRoot.host.setAttribute('theme', savedTheme);
+        } else {
+            this.shadowRoot.host.setAttribute('theme', 'light');
+        }
     }
 
     async loadData() {
@@ -894,6 +927,10 @@ class HomePage extends HTMLElement {
                 }, 200);
             }
         }
+    }
+    toggleTheme() {
+        this.theme = this.theme === 'dark' ? 'light' : 'dark';
+        this.setAttribute('theme', this.theme);
     }
     
 
