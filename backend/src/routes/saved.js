@@ -1,4 +1,3 @@
-// routes/saved.js
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const { query } = require('../config/database');
@@ -6,9 +5,7 @@ const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
 
-// @route   GET /api/saved
-// @desc    Get user's saved foods
-// @access  Private
+
 router.get('/', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;

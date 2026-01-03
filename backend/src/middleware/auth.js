@@ -1,17 +1,14 @@
 const jwt = require('jsonwebtoken');
 const { query } = require('../config/database');
 
-// JWT Secret from environment variable
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
-// Generate JWT Token
 const generateToken = (payload) => {
     return jwt.sign(payload, JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRE || '7d'
     });
 };
 
-// Verify JWT Token
 const verifyToken = (token) => {
     try {
         return jwt.verify(token, JWT_SECRET);
@@ -20,7 +17,6 @@ const verifyToken = (token) => {
     }
 };
 
-// Authentication middleware
 const authenticateToken = async (req, res, next) => {
     try {
         const authHeader = req.headers['authorization'];
@@ -41,7 +37,6 @@ const authenticateToken = async (req, res, next) => {
             });
         }
 
-        // Check if user still exists
         const userResult = await query(
             'SELECT id, name, email, phone, address FROM users WHERE id = $1',
             [decoded.userId]
@@ -65,7 +60,6 @@ const authenticateToken = async (req, res, next) => {
     }
 };
 
-// Optional authentication - doesn't fail if no token
 const optionalAuth = async (req, res, next) => {
     try {
         const authHeader = req.headers['authorization'];
@@ -85,7 +79,6 @@ const optionalAuth = async (req, res, next) => {
         }
         next();
     } catch (error) {
-        // Don't fail the request, just continue without user
         next();
     }
 };

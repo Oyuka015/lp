@@ -6,81 +6,11 @@ const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
 
-// @route   GET /api/orders
-// @desc    Get user's orders
-// @access  Private
-// router.get('/', authenticateToken, async (req, res) => {
-//     try {
-//         const userId = req.user.id;
-//         const { status, limit = 10, offset = 0 } = req.query;
-
-//         let baseQuery = `
-//             SELECT 
-//                 o.id, o.order_number, o.total_amount, o.status, o.delivery_address, o.notes,
-//                 o.created_at, o.updated_at,
-//                 COUNT(oi.id) as item_count
-//             FROM orders o
-//             LEFT JOIN order_items oi ON o.id = oi.order_id
-//             WHERE o.user_id = $1
-//         `;
-
-//         const params = [userId];
-//         let paramIndex = 2;
-
-//         // Filter by status
-//         if (status) {
-//             baseQuery += ` AND o.status = $${paramIndex}`;
-//             params.push(status);
-//             paramIndex++;
-//         }
-
-//         baseQuery += ` GROUP BY o.id, o.order_number, o.total_amount, o.status, o.delivery_address, o.notes, o.created_at, o.updated_at`;
-//         baseQuery += ` ORDER BY o.created_at DESC`;
-
-//         // Add pagination
-//         baseQuery += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
-//         params.push(parseInt(limit), parseInt(offset));
-
-//         const result = await query(baseQuery, params);
-
-//         const orders = result.rows.map(order => ({
-//             id: order.id,
-//             orderNumber: order.order_number,
-//             totalAmount: parseFloat(order.total_amount),
-//             status: order.status,
-//             deliveryAddress: order.delivery_address,
-//             notes: order.notes,
-//             itemCount: parseInt(order.item_count),
-//             createdAt: order.created_at,
-//             updatedAt: order.updated_at
-//         }));
-
-//         res.json({
-//             success: true,
-//             data: orders,
-//             count: orders.length,
-//             pagination: {
-//                 limit: parseInt(limit),
-//                 offset: parseInt(offset)
-//             }
-//         });
-
-//     } catch (error) {
-//         console.error('❌ Get orders error:', error);
-//         res.status(500).json({
-//             success: false,
-//             error: 'Failed to fetch orders',
-//             message: 'An error occurred while fetching your orders'
-//         });
-//     }
-// });
-
 router.get('/', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
         const { status, limit = 10, offset = 0 } = req.query;
 
-        // Захиалгуудыг авчирна
         let baseQuery = `
             SELECT 
                 o.id, o.order_number, o.total_amount, o.status, o.delivery_address, o.notes,
@@ -104,7 +34,6 @@ router.get('/', authenticateToken, async (req, res) => {
 
         const orders = [];
         for (const order of ordersResult.rows) {
-            // Order items-г авчирна
             const itemsResult = await query(`
                 SELECT 
                     oi.id, oi.quantity, oi.unit_price, oi.subtotal,
@@ -156,9 +85,7 @@ router.get('/', authenticateToken, async (req, res) => {
     }
 });
 
-// @route   GET /api/orders/:id
-// @desc    Get single order by ID
-// @access  Private
+
 router.get('/:id', authenticateToken, async (req, res) => {
     try {
         const { id } = req.params;
@@ -182,7 +109,6 @@ router.get('/:id', authenticateToken, async (req, res) => {
 
         const order = orderResult.rows[0];
 
-        // Get order items
         const itemsResult = await query(`
             SELECT 
                 oi.id, oi.quantity, oi.unit_price, oi.subtotal,
@@ -227,9 +153,6 @@ router.get('/:id', authenticateToken, async (req, res) => {
     }
 });
 
-// @route   POST /api/orders
-// @desc    Create new order
-// @access  Private
 router.post('/', [
     authenticateToken,
     body('deliveryAddress').optional().trim().isLength({ max: 500 }),

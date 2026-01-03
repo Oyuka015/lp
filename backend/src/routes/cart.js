@@ -5,9 +5,6 @@ const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
 
-// @route   GET /api/cart
-// @desc    Get user's cart
-// @access  Private
 router.get('/', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;

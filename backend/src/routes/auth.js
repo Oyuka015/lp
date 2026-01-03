@@ -6,7 +6,6 @@ const { generateToken } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Register validation rules
 const registerValidation = [
     body('name')
         .trim()

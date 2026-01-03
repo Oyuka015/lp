@@ -6,9 +6,6 @@ const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
 
-// @route   GET /api/users/profile
-// @desc    Get current user profile
-// @access  Private
 router.get('/profile', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;

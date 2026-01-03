@@ -4,9 +4,6 @@ const { optionalAuth, authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
 
-// @route   GET /api/foods
-// @desc    Get all foods with optional filtering
-// @access  Public
 router.get('/', optionalAuth, async (req, res) => {
     try {
         const { category, search, restaurant, minPrice, maxPrice, sort } = req.query;
