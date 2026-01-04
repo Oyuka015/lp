@@ -3,7 +3,7 @@ require('dotenv').config({ path: '../../.env' });
 
 const dbConfig = {
     host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 5433,
+    port: process.env.DB_PORT || 5432,
     database: process.env.DB_NAME || 'foodrush_db',
     user: process.env.DB_USER || 'postgres',
     password: String(process.env.DB_PASSWORD || '1234'),
@@ -15,11 +15,11 @@ const dbConfig = {
 const pool = new Pool(dbConfig);
 
 pool.on('connect', () => {
-    console.log('✅ Connected to PostgreSQL database');
+    console.log('Connected to PostgreSQL database, амжилттай!');
 });
 
 pool.on('error', (err) => {
-    console.error('❌ Database connection error:', err);
+    console.error('Database connection үүсэхэд алдаа гарлаа:', err);
     process.exit(-1);
 });
 
@@ -28,10 +28,10 @@ const query = async (text, params) => {
         const start = Date.now();
         const res = await pool.query(text, params);
         const duration = Date.now() - start;
-        console.log('📊 Query executed:', { text, duration, rows: res.rowCount });
+        console.log('Query executed:', { text, duration, rows: res.rowCount });
         return res;
     } catch (error) {
-        console.error('❌ Query error:', error);
+        console.error('Query error:', error);
         throw error;
     }
 };
@@ -42,7 +42,7 @@ const getClient = async () => {
 
 const closePool = async () => {
     await pool.end();
-    console.log('🔌 Database connection pool closed');
+    console.log('Database connection haagdlaa');
 };
 
 module.exports = {
