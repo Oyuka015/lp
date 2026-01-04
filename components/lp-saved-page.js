@@ -11,7 +11,7 @@ class SavedPage extends HTMLElement {
                 :host {
                     --bg-primary: #0A0A0A;
                     --bg-secondary: #1A1A1A;
-                    --accent-primary: #00D4FF;
+                    --accent-primary: hsl(25, 100%, 50%);
                     --accent-secondary: #FF006B;
                     --text-primary: #FFFFFF;
                     --text-secondary: #B0B0B0;
@@ -101,6 +101,7 @@ class SavedPage extends HTMLElement {
                 .food-image {
                     width: 100%;
                     height: 180px;
+                    aspect-ratio: 16 / 9;
                     object-fit: cover;
                     transition: all 0.3s ease;
                 }
@@ -252,7 +253,6 @@ class SavedPage extends HTMLElement {
                     box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
                 }
 
-                /* Loading State */
                 .loading-container {
                     display: flex;
                     justify-content: center;
@@ -297,9 +297,9 @@ class SavedPage extends HTMLElement {
             
             <div class="saved-container">
                 <div class="page-header">
-                    <h1 class="page-title">Saved Foods</h1>
+                    <h1 class="page-title">Хадгалсан хоол</h1>
                     <p class="page-subtitle">
-                        Your favorite foods, ready to order anytime
+                        Easy, peasy food is crazy.
                         <span class="saved-count" id="saved-count">(0)</span>
                     </p>
                 </div>
@@ -309,13 +309,12 @@ class SavedPage extends HTMLElement {
                 </div>
                 
                 <div class="food-grid" id="food-grid">
-                    <!-- Saved food items will be dynamically loaded -->
                 </div>
                 
                 <div class="empty-state hidden" id="empty-state">
                     <div class="empty-icon">💾</div>
-                    <h3 class="empty-title">No saved foods yet</h3>
-                    <p class="empty-text">Start exploring and save your favorite foods for quick access</p>
+                    <h3 class="empty-title">Ямар ч хоол хадгалаагүй байна.</h3>
+                    <p class="empty-text">Нүүр хэсэгрүү орно уу.</p>
                     <button class="browse-btn" id="browse-btn">Browse Foods</button>
                 </div>
             </div>
@@ -337,7 +336,6 @@ class SavedPage extends HTMLElement {
             }
         });
 
-        // Add click listeners for food card actions
         foodGrid.addEventListener('click', async (e) => {
             const button = e.target.closest('.action-btn');
             if (!button) return;
@@ -347,7 +345,7 @@ class SavedPage extends HTMLElement {
 
             if (action === 'remove') {
                 await window.foodRushApp.toggleSaveItem(foodId);
-                this.loadSavedFoods(); // дахин render хийх
+                this.loadSavedFoods();
             } else if (action === 'add-to-cart') {
                 window.foodRushApp.addToCart(foodId, 1);
             }
@@ -362,18 +360,14 @@ class SavedPage extends HTMLElement {
         const emptyState = this.shadowRoot.getElementById('empty-state');
         const savedCount = this.shadowRoot.getElementById('saved-count');
 
-        // Show loading
         loadingContainer.style.display = 'flex';
         foodGrid.style.display = 'none';
         emptyState.classList.add('hidden');
 
-        // Simulate loading delay
         const savedFoods = await window.foodRushApp.getSavedFoods();
         
-        // Update count
         savedCount.textContent = `(${savedFoods.length})`;
 
-        // Hide loading
         loadingContainer.style.display = 'none';
 
         if (savedFoods.length === 0) {
@@ -382,7 +376,6 @@ class SavedPage extends HTMLElement {
             return;
         }
 
-        // saved food байгаа үед
         emptyState.classList.add('hidden');
         foodGrid.style.display = 'grid';
         this.renderSavedFoods(savedFoods);
@@ -394,7 +387,7 @@ class SavedPage extends HTMLElement {
         foodGrid.innerHTML = foods.map(food => `
             <div class="food-card" data-food-id="${food.id}">
                 <div class="saved-indicator">❤️</div>
-                <img src="${food.image}" alt="${food.name}" class="food-image" loading="lazy">
+                <img src="${food.image}" alt="${food.name}" class="food-image" loading="lazy" decoding="async">
                 <div class="food-info">
                     <div class="food-header">
                         <div>
@@ -412,10 +405,10 @@ class SavedPage extends HTMLElement {
                         </div>
                         <div class="food-actions">
                             <button class="action-btn remove-btn" data-food-id="${food.id}" data-action="remove">
-                                Remove
+                                Хасах
                             </button>
                             <button class="action-btn cart-btn" data-food-id="${food.id}" data-action="add-to-cart">
-                                Add to Cart
+                                Сагслах
                             </button>
                         </div>
                     </div>
@@ -427,15 +420,12 @@ class SavedPage extends HTMLElement {
     removeFromSaved(foodId) {
         if (!window.foodRushApp) return;
         
-        // Remove from saved items
         window.foodRushApp.toggleSaveItem(foodId);
         
-        // Show notification
         if (window.foodRushApp) {
             window.foodRushApp.showNotification('Removed from saved foods', 'info');
         }
         
-        // Reload the page to update the view
         this.loadSavedFoods();
     }
 
@@ -445,7 +435,6 @@ class SavedPage extends HTMLElement {
         const success = window.foodRushApp.addToCart(foodId);
         
         if (success) {
-            // Add visual feedback
             const button = this.shadowRoot.querySelector(`[data-food-id="${foodId}"][data-action="add-to-cart"]`);
             if (button) {
                 button.style.transform = 'scale(1.1)';
@@ -458,11 +447,9 @@ class SavedPage extends HTMLElement {
         }
     }
 
-    // Method to refresh the page when returning from other pages
     refresh() {
         this.loadSavedFoods();
     }
 }
 
-// Register the component
 customElements.define('saved-page', SavedPage);

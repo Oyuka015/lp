@@ -1,4 +1,3 @@
-// Category Pill Component
 class CategoryPill extends HTMLElement {
     constructor() {
         super();
@@ -35,7 +34,7 @@ class CategoryPill extends HTMLElement {
                     align-items: center;
                     background: ${
                       active
-                        ? "linear-gradient(135deg, #00D4FF, #0099CC)"
+                        ? "linear-gradient(135deg, hsl(25, 100%, 50%), hsla(25, 92%, 34%, 1.00))"
                         : "rgba(26,26,26,0.6)"
                     };
                     color: ${active ? "#fff" : "#B0B0B0"};

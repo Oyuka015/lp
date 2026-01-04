@@ -25,7 +25,7 @@ class AuthPage extends HTMLElement {
                 :host {
                     --bg-primary: #0A0A0A;
                     --bg-secondary: #1A1A1A;
-                    --accent-primary: #00D4FF;
+                    --accent-primary: hsl(25, 100%, 50%);
                     --accent-secondary: #FF006B;
                     --text-primary: #FFFFFF;
                     --text-secondary: #B0B0B0;

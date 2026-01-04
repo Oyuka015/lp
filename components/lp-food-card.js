@@ -1,41 +1,49 @@
 class FoodCard extends HTMLElement {
-    constructor() {
-        super();
-        this.attachShadow({ mode: 'open' });
-        this.food = null;
-        this.render();
-    }
+  constructor() {
+    super();
+    this.attachShadow({ mode: "open" });
+    this.food = null;
+    this.render();
+  }
 
-    static get observedAttributes() {
-        return ['food-id', 'name', 'price', 'image', 'description', 'restaurant', 'rating'];
-    }
+  static get observedAttributes() {
+    return [
+      "food-id",
+      "name",
+      "price",
+      "image",
+      "description",
+      "restaurant",
+      "rating",
+    ];
+  }
 
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (oldValue !== newValue) {
-            this.updateFoodData();
-            this.render();
-        }
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (oldValue !== newValue) {
+      this.updateFoodData();
+      this.render();
     }
+  }
 
-    updateFoodData() {
-        this.food = {
-            id: this.getAttribute('food-id'),
-            name: this.getAttribute('name'),
-            price: parseFloat(this.getAttribute('price')),
-            image: this.getAttribute('image'),
-            description: this.getAttribute('description'),
-            restaurant: this.getAttribute('restaurant'),
-            rating: parseFloat(this.getAttribute('rating'))
-        };
-    }
+  updateFoodData() {
+    this.food = {
+      id: this.getAttribute("food-id"),
+      name: this.getAttribute("name"),
+      price: parseFloat(this.getAttribute("price")),
+      image: this.getAttribute("image"),
+      description: this.getAttribute("description"),
+      restaurant: this.getAttribute("restaurant"),
+      rating: parseFloat(this.getAttribute("rating")),
+    };
+  }
 
-    render() {
-      this.shadowRoot.innerHTML = /*css */ `
+  render() {
+    this.shadowRoot.innerHTML = /*css */ `
             <style>
                 :host {
                     --bg-primary: #0A0A0A;
                     --bg-secondary: #1A1A1A;
-                    --accent-primary: #00D4FF;
+                    --accent-primary: hsl(25, 100%, 50%);
                     --accent-secondary: #FF006B;
                     --text-primary: #FFFFFF;
                     --text-secondary: #B0B0B0;
@@ -70,6 +78,7 @@ class FoodCard extends HTMLElement {
                 .food-image {
                     width: 100%;
                     height: 180px;
+                    aspect-ratio: 16 / 9;
                     object-fit: cover;
                     transition: all 0.3s ease;
                 }
@@ -180,7 +189,7 @@ class FoodCard extends HTMLElement {
                 }
 
                 .cart-btn {
-                    background: linear-gradient(135deg, var(--accent-primary), #0099CC);
+                    background:  var(--accent-primary);
                     color: var(--text-primary);
                 }
 
@@ -202,7 +211,7 @@ class FoodCard extends HTMLElement {
             </style>
             
             <div class="food-card">
-                <img class="food-image" id="food-image" src="" alt="Food Item">
+                <img class="food-image" id="food-image" src="" alt="Food Item" loading="lazy" decoding="async" width="300" height="180">
                 <div class="food-info">
                     <div class="food-header">
                         <div>
@@ -226,95 +235,113 @@ class FoodCard extends HTMLElement {
             </div>
         `;
 
-        this.setupEventListeners();
-        this.updateFoodData();
-        this.updateDisplay();
+    this.setupEventListeners();
+    this.updateFoodData();
+    this.updateDisplay();
+  }
+
+  setupEventListeners() {
+    const saveBtn = this.shadowRoot.getElementById("save-btn");
+    const cartBtn = this.shadowRoot.getElementById("cart-btn");
+
+    saveBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      this.toggleSave();
+    });
+
+    cartBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      this.addToCart();
+    });
+
+    this.shadowRoot
+      .querySelector(".food-card")
+      .addEventListener("click", () => {
+        this.showFoodDetails();
+      });
+  }
+
+  updateDisplay() {
+    if (!this.food) return;
+
+    const imgElement = this.shadowRoot.getElementById("food-image");
+    imgElement.src = this.food.image || this.food.image_url || "";
+    if (this.food.image || this.food.image_url) {
+      imgElement.loading = "lazy";
+      imgElement.decoding = "async";
     }
+    this.shadowRoot.getElementById("food-name").textContent = this.food.name;
+    this.shadowRoot.getElementById("food-restaurant").textContent =
+      this.food.restaurant;
+    this.shadowRoot.getElementById(
+      "food-price"
+    ).textContent = `$${this.food.price.toFixed(2)}`;
+    this.shadowRoot.getElementById("food-description").textContent =
+      this.food.description;
+    this.shadowRoot.getElementById("food-rating").textContent =
+      this.food.rating.toFixed(1);
 
-    setupEventListeners() {
-        const saveBtn = this.shadowRoot.getElementById('save-btn');
-        const cartBtn = this.shadowRoot.getElementById('cart-btn');
+    this.updateSaveButton();
+  }
 
-        saveBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            this.toggleSave();
-        });
+  updateSaveButton() {
+    if (!window.foodRushApp || !this.food) return;
 
-        cartBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            this.addToCart();
-        });
+    const saveBtn = this.shadowRoot.getElementById("save-btn");
+    const isSaved = window.foodRushApp.isItemSaved(this.food.id);
 
-        this.shadowRoot.querySelector('.food-card').addEventListener('click', () => {
-            this.showFoodDetails();
-        });
+    if (isSaved) {
+      saveBtn.classList.add("saved");
+    } else {
+      saveBtn.classList.remove("saved");
     }
+  }
 
-    updateDisplay() {
-        if (!this.food) return;
+  toggleSave() {
+    if (!window.foodRushApp || !this.food) return;
 
-        this.shadowRoot.getElementById('food-image').src = this.food.image_url;
-        this.shadowRoot.getElementById('food-name').textContent = this.food.name;
-        this.shadowRoot.getElementById('food-restaurant').textContent = this.food.restaurant;
-        this.shadowRoot.getElementById('food-price').textContent = `$${this.food.price.toFixed(2)}`;
-        this.shadowRoot.getElementById('food-description').textContent = this.food.description;
-        this.shadowRoot.getElementById('food-rating').textContent = this.food.rating.toFixed(1);
+    const isSaved = window.foodRushApp.toggleSaveItem(this.food.id);
+    this.updateSaveButton();
 
-        // Update save button state
-        this.updateSaveButton();
+    if (window.foodRushApp) {
+      const message = isSaved
+        ? "Added to saved foods!"
+        : "Removed from saved foods";
+      window.foodRushApp.showNotification(
+        message,
+        isSaved ? "success" : "info"
+      );
     }
+  }
 
-    updateSaveButton() {
-        if (!window.foodRushApp || !this.food) return;
+  addToCart() {
+    if (!window.foodRushApp || !this.food) return;
 
-        const saveBtn = this.shadowRoot.getElementById('save-btn');
-        const isSaved = window.foodRushApp.isItemSaved(this.food.id);
+    const success = window.foodRushApp.addToCart(this.food.id);
 
-        if (isSaved) {
-            saveBtn.classList.add('saved');
-        } else {
-            saveBtn.classList.remove('saved');
-        }
+    if (success) {
+      const cartBtn = this.shadowRoot.getElementById("cart-btn");
+      cartBtn.classList.add("added");
+
+      setTimeout(() => {
+        cartBtn.classList.remove("added");
+      }, 1000);
     }
+  }
 
-    toggleSave() {
-        if (!window.foodRushApp || !this.food) return;
+  showFoodDetails() {
+    if (!window.foodRushApp || !this.food) return;
 
-        const isSaved = window.foodRushApp.toggleSaveItem(this.food.id);
-        this.updateSaveButton();
-
-        // Show notification
-        if (window.foodRushApp) {
-            const message = isSaved ? 'Added to saved foods!' : 'Removed from saved foods';
-            window.foodRushApp.showNotification(message, isSaved ? 'success' : 'info');
-        }
+    // For now, just show a notification
+    // In a full implementation, this could open a detailed view modal
+    if (window.foodRushApp) {
+      window.foodRushApp.showNotification(
+        `Viewing details for ${this.food.name}`,
+        "info"
+      );
     }
-
-    addToCart() {
-        if (!window.foodRushApp || !this.food) return;
-
-        const success = window.foodRushApp.addToCart(this.food.id);
-
-        if (success) {
-            const cartBtn = this.shadowRoot.getElementById('cart-btn');
-            cartBtn.classList.add('added');
-            
-            setTimeout(() => {
-                cartBtn.classList.remove('added');
-            }, 1000);
-        }
-    }
-
-    showFoodDetails() {
-        if (!window.foodRushApp || !this.food) return;
-
-        // For now, just show a notification
-        // In a full implementation, this could open a detailed view modal
-        if (window.foodRushApp) {
-            window.foodRushApp.showNotification(`Viewing details for ${this.food.name}`, 'info');
-        }
-    }
+  }
 }
 
 // Register the component
-customElements.define('food-card', FoodCard);
+customElements.define("food-card", FoodCard);

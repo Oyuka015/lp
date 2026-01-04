@@ -21,7 +21,7 @@ class HomePage extends HTMLElement {
                 :host([theme="dark"]) {
                     --bg-primary: #0A0A0A;
                     --bg-secondary: #1A1A1A;
-                    --accent-primary: #00D4FF;
+                    --accent-primary: hsl(25, 100%, 50%);
                     --accent-secondary: #FF006B;
                     --text-primary: #FFFFFF;
                     --text-secondary: #B0B0B0;
@@ -35,7 +35,7 @@ class HomePage extends HTMLElement {
                 :host([theme="light"]) {
                     --bg-primary: #dadada;
                     --bg-secondary: #F5F5F5;
-                    --accent-primary: #00D4FF;
+                    --accent-primary: hsl(25, 100%, 50%);
                     --accent-secondary: #FF006B;
                     --text-primary: #000000;
                     --text-secondary: #555555;
@@ -231,7 +231,7 @@ class HomePage extends HTMLElement {
                 }
 
                 .category-pill.active {
-                    background: linear-gradient(135deg, var(--accent-primary), #0099CC);
+                    background: var(--accent-primary);
                     border-color: var(--accent-primary);
                     color: var(--text-primary);
                     box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
@@ -264,6 +264,7 @@ class HomePage extends HTMLElement {
                 .food-image {
                     width: 100%;
                     height: 180px;
+                    aspect-ratio: 16 / 9;
                     object-fit: cover;
                     transition: all 0.3s ease;
                 }
@@ -783,11 +784,11 @@ class HomePage extends HTMLElement {
 
     foodGrid.innerHTML = foodItems
       .map(
-        (food) => `
+        (food, index) => `
             <div class="food-card" data-food-id="${food.id}">
                 <img src="${food.image}" alt="${
           food.name
-        }" class="food-image" loading="lazy">
+        }" class="food-image" loading="${index < 6 ? 'eager' : 'lazy'}" decoding="async" width="300" height="180" fetchpriority="${index < 3 ? 'high' : 'low'}">
                 <div class="food-info">
                     <div class="food-header">
                         <div>

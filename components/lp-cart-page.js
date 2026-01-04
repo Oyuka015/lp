@@ -1,4 +1,3 @@
-// Cart Page Component for FoodRush App
 class CartPage extends HTMLElement {
     constructor() {
         super();
@@ -12,7 +11,7 @@ class CartPage extends HTMLElement {
                 :host {
                     --bg-primary: #0A0A0A;
                     --bg-secondary: #1A1A1A;
-                    --accent-primary: #00D4FF;
+                    --accent-primary: hsl(25, 100%, 50%);
                     --accent-secondary: #FF006B;
                     --text-primary: #FFFFFF;
                     --text-secondary: #B0B0B0;
@@ -556,14 +555,12 @@ class CartPage extends HTMLElement {
             paymentModal.classList.remove('show');
         });
 
-        // Close modal on overlay click
         paymentModal.addEventListener('click', (e) => {
             if (e.target === paymentModal) {
                 paymentModal.classList.remove('show');
             }
         });
 
-        // Add event listeners for cart item controls
         this.setupCartItemListeners();
     }
 
@@ -598,7 +595,7 @@ class CartPage extends HTMLElement {
         const emptyState = this.shadowRoot.getElementById('empty-state');
         const cartCount = this.shadowRoot.getElementById('cart-count');
 
-        // Update cart count
+     
         const itemCount = window.foodRushApp.getCartItemCount();
         cartCount.textContent = `(${itemCount} item${itemCount !== 1 ? 's' : ''})`;
 
@@ -614,12 +611,12 @@ class CartPage extends HTMLElement {
         orderSummary.style.display = 'block';
         checkoutSection.style.display = 'block';
 
-        // Render cart items
+ 
         cartItemsContainer.innerHTML = cartItems.map(item => {
             const food = window.foodRushApp.foodItems.find(f => f.id === item.foodId);
             return `
                 <div class="cart-item" data-food-id="${item.foodId}">
-                    <img src="${item.image}" alt="${item.name}" class="item-image">
+                    <img src="${item.image}" alt="${item.name}" class="item-image" loading="lazy" decoding="async">
                     <div class="item-details">
                         <div class="item-header">
                             <h3 class="item-name">${item.name}</h3>
@@ -665,7 +662,7 @@ class CartPage extends HTMLElement {
 
         window.foodRushApp.removeFromCart(foodId);
         
-        // Show notification
+    
         if (window.foodRushApp) {
             window.foodRushApp.showNotification('Item removed from cart', 'info');
         }

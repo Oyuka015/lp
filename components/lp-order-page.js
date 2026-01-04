@@ -11,7 +11,7 @@ class OrderPage extends HTMLElement {
                 :host {
                     --bg-primary: #0A0A0A;
                     --bg-secondary: #1A1A1A;
-                    --accent-primary: #00D4FF;
+                    --accent-primary: hsl(25, 100%, 50%);
                     --accent-secondary: #FF006B;
                     --text-primary: #FFFFFF;
                     --text-secondary: #B0B0B0;
@@ -155,21 +155,7 @@ class OrderPage extends HTMLElement {
 
     setupEventListeners() {
         const orderList = this.shadowRoot.getElementById('orders-list');
-        // Back button
-        // const backBtn = this.shadowRoot.getElementById('back-btn');
 
-        // if (backBtn) {
-        //     backBtn.addEventListener('click', (e) => {
-        //         e.preventDefault();
-        //         const page = backBtn.dataset.page;
-
-        //         if (window.foodRushApp) {
-        //             window.foodRushApp.navigateTo(page);
-        //         }
-        //     });
-        // }
-
-        // Order actions
         orderList.addEventListener('click', async (e) => {
             const button = e.target.closest('.action-btn');
             if (!button) return;
