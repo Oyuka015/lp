@@ -104,7 +104,7 @@ class HomePage extends HTMLElement {
                 .address-text {
                     flex: 1;
                     font-size: 14px;
-                    color: var(--text-primary);
+                    color: var(--text-primary); 
                 }
 
                 .address-edit {
@@ -371,7 +371,7 @@ class HomePage extends HTMLElement {
                 }
 
                 .cart-btn {
-                    background: linear-gradient(135deg, var(--accent-primary), #0099CC);
+                    background: var(--accent-primary) ;
                     color: var(--text-primary);
                 }
 
@@ -553,7 +553,7 @@ class HomePage extends HTMLElement {
                 <div class="search-section">
                     <div class="search-container">
                         <div class="search-icon">🔍</div>
-                        <input type="text" class="search-input" id="search-input" placeholder="Search for food, restaurant, or cuisine...">
+                        <input type="text" class="search-input" id="search-input" placeholder="Хоол хайх...">
                         <div class="clear-search" id="clear-search">✕</div>
                     </div>
                 </div>
@@ -795,7 +795,7 @@ class HomePage extends HTMLElement {
                             <h3 class="food-name">${food.name}</h3>
                             <p class="food-restaurant">${food.restaurant}</p>
                         </div>
-                        <div class="food-price">$${food.price.toFixed(2)}</div>
+                        <div class="food-price">₮${food.price.toFixed(2)}</div>
                     </div>
                     <p class="food-description">${food.description}</p>
                     <div class="food-footer">

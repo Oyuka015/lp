@@ -163,7 +163,7 @@ router.put('/update', [
                 action: 'removed'
             });
         } else {
-            // Update quantity
+            // Update 
             const result = await query(
                 'UPDATE cart_items SET quantity = $1 WHERE user_id = $2 AND food_id = $3 RETURNING *',
                 [quantity, userId, foodId]

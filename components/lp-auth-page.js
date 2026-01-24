@@ -128,7 +128,7 @@ class AuthPage extends HTMLElement {
 
                 .btn-primary {
                     width: 100%;
-                    background: linear-gradient(135deg, var(--accent-primary), #0099CC);
+                    background: var(--accent-primary) ;
                     border: none;
                     color: var(--text-primary);
                     padding: 14px 24px;
@@ -270,13 +270,13 @@ class AuthPage extends HTMLElement {
             
             <div class="auth-container">
                 <div class="auth-header">
-                    <h1 class="app-logo">FOODRUSH</h1>
-                    <p class="app-tagline">Fast Delivery, Fresh Food</p>
+                    <h1 class="app-logo">London Pop</h1>
+                    <p class="app-tagline">Easy peasy food is crazy.</p>
                 </div>
                 
                 <div class="auth-card">
                     <h2 class="auth-title">${
-                      this.mode === "login" ? "Welcome Back" : "Create Account"
+                      this.mode === "login" ? "Нэврэх" : "Бүртгүүлэх"
                     }</h2>
                     
                     <div id="message-container"></div>
@@ -286,37 +286,37 @@ class AuthPage extends HTMLElement {
                           this.mode === "register"
                             ? `
                             <div class="form-group">
-                                <label class="form-label" for="name">Full Name</label>
-                                <input type="text" id="name" class="form-input" placeholder="Enter your full name" required>
+                                <label class="form-label" for="name">Нэр</label>
+                                <input type="text" id="name" class="form-input" placeholder="Та нэрээ оруулна уу." required>
                             </div>
                         `
                             : ""
                         }
                         
                         <div class="form-group">
-                            <label class="form-label" for="email">Email Address</label>
-                            <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+                            <label class="form-label" for="email">Цахим шуудан</label>
+                            <input type="email" id="email" class="form-input" placeholder="Цахим шуудангаа оруулна уу." required>
                         </div>
                         
                         ${
                           this.mode === "register"
                             ? `
                             <div class="form-group">
-                                <label class="form-label" for="phone">Phone Number</label>
-                                <input type="tel" id="phone" class="form-input" placeholder="Enter your phone number" required>
+                                <label class="form-label" for="phone">Утасны дугаар</label>
+                                <input type="tel" id="phone" class="form-input" placeholder="Утасны дугаараа оруулна уу." required>
                             </div>
                             
                             <div class="form-group">
-                                <label class="form-label" for="address">Delivery Address</label>
-                                <input type="text" id="address" class="form-input" placeholder="Enter your delivery address" required>
+                                <label class="form-label" for="address">Хүргэлтийн хаяг</label>
+                                <input type="text" id="address" class="form-input" placeholder="Хаягаа оруулна уу." required>
                             </div>
                         `
                             : ""
                         }
                         
                         <div class="form-group">
-                            <label class="form-label" for="password">Password</label>
-                            <input type="password" id="password" class="form-input" placeholder="Enter your password" required minlength="6">
+                            <label class="form-label" for="password">Нууц үг</label>
+                            <input type="password" id="password" class="form-input" placeholder="Нууц үгээ оруулна уу." required minlength="6">
                             ${
                               this.mode === "register"
                                 ? `
@@ -332,8 +332,8 @@ class AuthPage extends HTMLElement {
                           this.mode === "register"
                             ? `
                             <div class="form-group">
-                                <label class="form-label" for="confirm-password">Confirm Password</label>
-                                <input type="password" id="confirm-password" class="form-input" placeholder="Confirm your password" required minlength="6">
+                                <label class="form-label" for="confirm-password">Нууц үг баталгаажуулах</label>
+                                <input type="password" id="confirm-password" class="form-input" placeholder="Нууц үгээ дахин оруулна." required minlength="6">
                             </div>
                         `
                             : ""
@@ -342,8 +342,8 @@ class AuthPage extends HTMLElement {
                         <button type="submit" class="btn-primary" id="submit-btn">
                             ${
                               this.mode === "login"
-                                ? "Sign In"
-                                : "Create Account"
+                                ? "Нэвтрэх"
+                                : "Бүртгүүлэх"
                             }
                         </button>
                     </form>
@@ -353,14 +353,14 @@ class AuthPage extends HTMLElement {
                           this.mode === "login"
                             ? `
                             <p style="color: var(--text-secondary); font-size: 14px;">
-                                Don't have an account? 
-                                <span class="auth-link" id="switch-to-register">Sign up here</span>
+                                Бүртгэлгүй хэрэглэгч үү? 
+                                <span class="auth-link" id="switch-to-register">Бүртгүүлэх</span>
                             </p>
                         `
                             : `
                             <p style="color: var(--text-secondary); font-size: 14px;">
-                                Already have an account? 
-                                <span class="auth-link" id="switch-to-login">Sign in here</span>
+                                Аль хэдийн бүртгэлтэй юу? 
+                                <span class="auth-link" id="switch-to-login">Нэвтрэх</span>
                             </p>
                         `
                         }
@@ -376,13 +376,11 @@ class AuthPage extends HTMLElement {
         const switchToRegister = this.shadowRoot.getElementById('switch-to-register');
         const switchToLogin = this.shadowRoot.getElementById('switch-to-login');
         
-        // Form submission
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             this.handleSubmit();
         });
 
-        // Switch between login and register
         if (switchToRegister) {
             switchToRegister.addEventListener('click', () => {
                 this.setAttribute('mode', 'register');
@@ -395,7 +393,6 @@ class AuthPage extends HTMLElement {
             });
         }
 
-        // Password strength indicator for registration
         if (this.mode === 'register') {
             const passwordInput = this.shadowRoot.getElementById('password');
             const strengthBar = this.shadowRoot.getElementById('password-strength-bar');
@@ -408,10 +405,8 @@ class AuthPage extends HTMLElement {
 
     async handleSubmit() {
         const submitBtn = this.shadowRoot.getElementById('submit-btn');
-        // const messageContainer = this.shadowRoot.getElementById('message-container');
         
-        // Show loading state
-        submitBtn.innerHTML = '<span class="loading"></span>Processing...';
+        submitBtn.innerHTML = '<span class="loading"></span>Уншиж байна...';
         submitBtn.disabled = true;
         
         try {
@@ -423,7 +418,7 @@ class AuthPage extends HTMLElement {
         } catch (error) {
             this.showMessage(error.message, 'error');
         } finally {
-            submitBtn.innerHTML = this.mode === 'login' ? 'Sign In' : 'Create Account';
+            submitBtn.innerHTML = this.mode === 'login' ? 'Нэвтрэх' : 'Бүртгүүлэх';
             submitBtn.disabled = false;
         }
     }
@@ -434,15 +429,15 @@ class AuthPage extends HTMLElement {
         
         // Validation
         if (!email || !password) {
-            throw new Error('Please fill in all fields');
+            throw new Error('Бүх талбарыг бөглөнө үү.');
         }
         
         if (!this.isValidEmail(email)) {
-            throw new Error('Please enter a valid email address');
+            throw new Error('Зөв цахим хаяг оруулна уу.');
         }
         
         if (password.length < 6) {
-            throw new Error('Password must be at least 6 characters');
+            throw new Error('Нууц нь ядаж 6 тэмдэгт байх хэрэгтэй.');
         }
         
         const response = await fetch('http://localhost:5500/api/auth/login', {
@@ -454,8 +449,7 @@ class AuthPage extends HTMLElement {
         const data = await response.json();
 
         if (response.ok) {
-            this.showMessage('Login successful! Redirecting...', 'success');
-            // Save token to localStorage if backend returns JWT
+            this.showMessage('Амжилттай нэвтэрлээ...', 'success');
             if (data.token){
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('user', JSON.stringify(data.user));
@@ -477,31 +471,26 @@ class AuthPage extends HTMLElement {
         const password = this.shadowRoot.getElementById('password').value;
         const confirmPassword = this.shadowRoot.getElementById('confirm-password').value;
         
-        // Validation
         if (!name || !email || !phone || !address || !password || !confirmPassword) {
-            throw new Error('Please fill in all fields');
+            throw new Error('Бүх талбарыг бөглөнө үү.');
         }
         
         if (!this.isValidEmail(email)) {
-            throw new Error('Please enter a valid email address');
+            throw new Error('Зөв цахим хаяг оруулна уу.');
         }
         
         if (password.length < 6) {
-            throw new Error('Password must be at least 6 characters');
+            throw new Error('Нууц нь ядаж 6 тэмдэгт байх хэрэгтэй.');
         }
         
         if (password !== confirmPassword) {
-            throw new Error('Passwords do not match');
+            throw new Error('Нууц үг тохирохгүй байна');
         }
         
         if (!this.isValidPhone(phone)) {
-            throw new Error('Please enter a valid phone number');
+            throw new Error('Зөв утасны дугаар оруулна уу.');
         }
         
-        // Mock registration delay
-        // await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Call app register method
         const userData = { name, email, phone, address, password };
 
         const response = await fetch('http://localhost:5500/api/auth/register', {
@@ -513,7 +502,7 @@ class AuthPage extends HTMLElement {
         const data = await response.json();
 
         if (response.ok) {
-            this.showMessage('Registration successful! Redirecting...', 'success');
+            this.showMessage('Амжилттай бүртгүүллээ', 'success');
             window.location.href = '/#login';
         } else {
             throw new Error(data.message || 'Registration failed');
@@ -548,7 +537,6 @@ class AuthPage extends HTMLElement {
             </div>
         `;
         
-        // Auto hide after 5 seconds
         setTimeout(() => {
             messageContainer.innerHTML = '';
         }, 5000);
@@ -565,5 +553,4 @@ class AuthPage extends HTMLElement {
     }
 }
 
-// Register the component
 customElements.define('auth-page', AuthPage);

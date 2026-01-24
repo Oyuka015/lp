@@ -384,7 +384,6 @@ class ProfilePage extends HTMLElement {
             <div class="profile-container">
                 <div class="page-header">
                     <h1 class="page-title">Profile</h1>
-                    <p class="page-subtitle">Manage your account and preferences</p>
                 </div>
                 
                 <!-- Loading State -->
@@ -403,15 +402,15 @@ class ProfilePage extends HTMLElement {
                         <div class="profile-stats">
                             <div class="stat-item">
                                 <span class="stat-value" id="orders-count">0</span>
-                                <span class="stat-label">Orders</span>
+                                <span class="stat-label">Захиалгууд</span>
                             </div>
                             <div class="stat-item">
                                 <span class="stat-value" id="saved-count">0</span>
-                                <span class="stat-label">Saved</span>
+                                <span class="stat-label">Хадгалсан</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-value" id="total-spent">$0</span>
-                                <span class="stat-label">Total Spent</span>
+                                <span class="stat-value" id="total-spent">₮0</span>
+                                <span class="stat-label">Нийт зарцуулсан</span>
                             </div>
                         </div>
                     </div>
@@ -420,30 +419,30 @@ class ProfilePage extends HTMLElement {
                     <div class="info-section">
                         <h3 class="section-title">
                             <span class="section-icon">👤</span>
-                            Personal Information
+                            Хувийн мэдээлэл
                         </h3>
                         
                         <div class="info-item">
-                            <span class="info-label">Full Name</span>
+                            <span class="info-label">Нэр</span>
                             <div>
                                 <span class="info-value" id="display-name">User Name</span>
-                                <button class="edit-btn" data-field="name">Edit</button>
+                                <button class="edit-btn" data-field="name">Засах</button>
                             </div>
                         </div>
                         
                         <div class="info-item">
-                            <span class="info-label">Email Address</span>
+                            <span class="info-label">Цахим шуудан</span>
                             <div>
                                 <span class="info-value" id="display-email">user@example.com</span>
-                                <button class="edit-btn" data-field="email">Edit</button>
+                                <button class="edit-btn" data-field="email">Засах</button>
                             </div>
                         </div>
                         
                         <div class="info-item">
-                            <span class="info-label">Phone Number</span>
+                            <span class="info-label">Утасны дугаар</span>
                             <div>
-                                <span class="info-value" id="display-phone">+1234567890</span>
-                                <button class="edit-btn" data-field="phone">Edit</button>
+                                <span class="info-value" id="display-phone">+976 99999999</span>
+                                <button class="edit-btn" data-field="phone">Засах</button>
                             </div>
                         </div>
                     </div>
@@ -452,14 +451,14 @@ class ProfilePage extends HTMLElement {
                     <div class="info-section">
                         <h3 class="section-title">
                             <span class="section-icon">📍</span>
-                            Delivery Information
+                            Хүргэлтийн мэдээлэл
                         </h3>
                         
                         <div class="info-item">
-                            <span class="info-label">Default Address</span>
+                            <span class="info-label">Гэрийн хаяг</span>
                             <div>
                                 <span class="info-value" id="display-address">No address set</span>
-                                <button class="edit-btn" data-field="address">Edit</button>
+                                <button class="edit-btn" data-field="address">Засах</button>
                             </div>
                         </div>
                     </div>
@@ -467,27 +466,25 @@ class ProfilePage extends HTMLElement {
                     <!-- Account Actions -->
                     <div class="action-section">
                         <button class="action-btn orders-btn" id="orders-btn">
-                            📋 Order History
+                            📋 Захиалгын түүх
                         </button>
                         
                         <button class="action-btn support-btn" id="support-btn">
-                            💬 Customer Support
+                            💬 Хэрэглэгчийн туслах
                         </button> 
                         
-                        <button class="action-btn logout-btn" id="logout-btn">
-                            🚪 Logout
-                        </button>
                         
                         <button class="action-btn theme-btn" id="theme-btn">
-                            🌙 / ☀️
+                        🌙 / ☀️
                         </button>
- 
+                        
+                        <button class="action-btn logout-btn" id="logout-btn">
+                            🚪 Гарах
+                        </button>
                     </div>
                     
                     <!-- App Info -->
-                    <div class="app-info">
-                        <div class="app-version">FoodRush v1.0.0</div>
-                        <div class="app-copyright">© 2024 FoodRush. All rights reserved.</div>
+                    <div class="app-info"> 
                     </div>
                 </div>
             </div>
@@ -495,11 +492,11 @@ class ProfilePage extends HTMLElement {
             <!-- Edit Modal -->
             <div class="modal-overlay" id="edit-modal">
                 <div class="modal-content">
-                    <h3 class="modal-title" id="modal-title">Edit Information</h3>
-                    <input type="text" class="form-input" id="edit-input" placeholder="Enter new value">
+                    <h3 class="modal-title" id="modal-title">Мэдээлэл засах</h3>
+                    <input type="text" class="form-input" id="edit-input" placeholder="Шинэ утгаа оруулах">
                     <div class="modal-actions">
-                        <button class="modal-btn modal-btn-secondary" id="cancel-edit">Cancel</button>
-                        <button class="modal-btn modal-btn-primary" id="save-edit">Save</button>
+                        <button class="modal-btn modal-btn-secondary" id="cancel-edit">Буцах</button>
+                        <button class="modal-btn modal-btn-primary" id="save-edit">Хадгалах</button>
                     </div>
                 </div>
             </div>
@@ -628,7 +625,7 @@ class ProfilePage extends HTMLElement {
             // Update stats
             this.shadowRoot.getElementById('orders-count').textContent = stats.orderCount || 0;
             this.shadowRoot.getElementById('saved-count').textContent = stats.savedCount || 0;
-            this.shadowRoot.getElementById('total-spent').textContent = `$${stats.totalSpent?.toFixed(2) || 0}`;
+            this.shadowRoot.getElementById('total-spent').textContent = `₮${stats.totalSpent?.toFixed(2) || 0}`;
 
             // Update localStorage
             if (window.foodRushApp) {

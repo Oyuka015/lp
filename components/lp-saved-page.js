@@ -193,13 +193,13 @@ class SavedPage extends HTMLElement {
                 }
 
                 .cart-btn {
-                    background: linear-gradient(135deg, var(--accent-primary), #0099CC);
+                    background: var(--accent-primary);
                     color: var(--text-primary);
                 }
 
                 .cart-btn:hover {
                     transform: scale(1.05);
-                    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4);
+                    box-shadow: 0 4px 15px hsl(25, 100%, 50%);
                 }
 
                 /* Empty State */

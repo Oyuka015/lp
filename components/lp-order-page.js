@@ -135,8 +135,8 @@ class OrderPage extends HTMLElement {
                 ">← Back to Profile</button>-->
 
                 <div class="page-header">
-                    <h1 class="page-title">Order History</h1>
-                    <p class="page-subtitle">View your previous orders</p>
+                    <h1 class="page-title">Захиалгын түүх</h1>
+                    <p class="page-subtitle">Өмнөх захиалгуудаа харах</p>
                 </div>
 
                 <div class="loading-container" id="loading-container">
@@ -164,14 +164,13 @@ class OrderPage extends HTMLElement {
             const action = button.dataset.action;
 
             if (action === 'cancel') {
-                const confirmed = confirm('Are you sure you want to cancel this order?');
+                const confirmed = confirm('Захиалгаа цуцлахдаа итгэлтэй байна уу?');
                 if (confirmed) {
                     await window.apiClient.cancelOrder(orderId);
                     this.loadOrders();
                 }
             } else if (action === 'view') {
-                // Show order details (modal or navigate)
-                alert(`View details for order #${orderId}`);
+                alert(`Дэлгэрэнгүй харах #${orderId}`);
             }
         });
     }
@@ -207,7 +206,7 @@ class OrderPage extends HTMLElement {
                         <span class="order-number">#${order.orderNumber}</span>
                         <span class="order-status">${order.status}</span>
                     </div>
-                    <div>Total: $${order.totalAmount.toFixed(2)}</div>
+                    <div>Нийт: ₮${order.totalAmount.toFixed(2)}</div>
                     <div>Items: ${order.itemCount}</div>
 
                     <!-- Захиалгын доторх хоолнууд -->
@@ -215,13 +214,13 @@ class OrderPage extends HTMLElement {
                         ${order.items.map(item => `
                             <div class="order-item">
                                 <span>${item.name} x ${item.quantity}</span>
-                                <span>$${parseFloat(item.subtotal).toFixed(2)}</span>
+                                <span>₮${parseFloat(item.subtotal).toFixed(2)}</span>
                             </div>
                         `).join('')}
                     </div>
 
                     <div class="order-footer">
-                        ${order.status === 'pending' ? `<button class="action-btn cancel-btn" data-order-id="${order.id}" data-action="cancel">Cancel</button>` : ''}
+                        ${order.status === 'pending' ? `<button class="action-btn cancel-btn" data-order-id="${order.id}" data-action="cancel">Цуцлах</button>` : ''}
                     </div>
                 </div>
             `).join('');
@@ -229,7 +228,7 @@ class OrderPage extends HTMLElement {
 
         } catch (err) {
             console.error('Failed to load orders', err);
-            loadingContainer.textContent = 'Failed to load orders';
+            loadingContainer.textContent = 'Захиалгын мэдээлэл харуулахад алдаа гарлаа';
         }
     }
 
