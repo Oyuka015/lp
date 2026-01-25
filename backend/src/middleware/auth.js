@@ -1,15 +1,14 @@
-const jwt = require('jsonwebtoken');
-const { query } = require('../config/database');
+import jwt from 'jsonwebtoken';
+import { query } from '../config/database.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
-
-const generateToken = (payload) => {
+export const generateToken = (payload) => {
     return jwt.sign(payload, JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRE || '7d'
     });
 };
 
-const verifyToken = (token) => {
+export const verifyToken = (token) => {
     try {
         return jwt.verify(token, JWT_SECRET);
     } catch (error) {
@@ -17,10 +16,10 @@ const verifyToken = (token) => {
     }
 };
 
-const authenticateToken = async (req, res, next) => {
+export const authenticateToken = async (req, res, next) => {
     try {
         const authHeader = req.headers['authorization'];
-        const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+        const token = authHeader && authHeader.split(' ')[1]; 
 
         if (!token) {
             return res.status(401).json({
@@ -60,7 +59,7 @@ const authenticateToken = async (req, res, next) => {
     }
 };
 
-const optionalAuth = async (req, res, next) => {
+export const optionalAuth = async (req, res, next) => {
     try {
         const authHeader = req.headers['authorization'];
         const token = authHeader && authHeader.split(' ')[1];
@@ -83,7 +82,8 @@ const optionalAuth = async (req, res, next) => {
     }
 };
 
-module.exports = {
+
+export default {
     generateToken,
     verifyToken,
     authenticateToken,

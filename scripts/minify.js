@@ -75,4 +75,3 @@ async function minifyAll() {
 }
 
 minifyAll().catch(console.error);
-

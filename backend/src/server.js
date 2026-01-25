@@ -1,94 +1,73 @@
-const express = require("express");
-const cors = require("cors");
-const helmet = require("helmet");
-const rateLimit = require("express-rate-limit");
-require("dotenv").config({ path: "../.env" });
+import 'express-async-errors';
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import dotenv from 'dotenv';
+import rateLimit from 'express-rate-limit';
 
-const authRoutes = require("./routes/auth");
-const userRoutes = require("./routes/users");
-const foodRoutes = require("./routes/foods");
-const orderRoutes = require("./routes/orders");
-const savedRoutes = require("./routes/saved");
-const cartRoutes = require("./routes/cart");
+// Чиний нэгтгэсэн router (index.js)
+import apiRoutes from './routes/index.js';
+import { closePool } from './config/database.js';
 
-const { closePool } = require("./config/database");
+dotenv.config({ path: '../.env' });
 
 const app = express();
 const PORT = process.env.PORT || 5500;
 
+// Middleware
 app.use(helmet());
-app.use(
-  cors({
-    origin: ["http://localhost:5500", "http://127.0.0.1:5500"],
-    credentials: true,
-  })
-);
+app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
+// Rate Limiter
 const limiter = rateLimit({
   windowMs: (process.env.RATE_LIMIT_WINDOW || 15) * 60 * 1000,
   max: process.env.RATE_LIMIT_MAX || 100,
-  message: "Too many requests from this IP, please try again later.",
+  message: { error: "Too many requests", message: "Түр хүлээгээд дахин оролдоно уу." },
 });
-app.use("/api/", limiter);
 
-app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/foods", foodRoutes);
-app.use("/api/orders", orderRoutes);
-app.use("/api/saved", savedRoutes);
-app.use("/api/cart", cartRoutes);
+// Бүх замыг нэгтгэсэн router-ээ ашиглах
+app.use("/api", limiter);
+app.use("/api", apiRoutes); // Одоо бүх зам /api/auth, /api/foods гэж ажиллана
 
+// Health Check
 app.get("/api/health", (req, res) => {
   res.json({
     status: "OK",
-    message: "FoodRush API is running",
-    timestamp: new Date().toISOString(),
     version: "1.0.0",
+    timestamp: new Date().toISOString(),
   });
 });
 
+// 404 Handler
 app.use((req, res) => {
-  res.status(404).json({
-    error: "Not Found",
-    message: "The requested resource was not found",
-  });
+  res.status(404).json({ error: "Not Found" });
 });
 
+// Global Error Handler (express-async-errors-ийн алдааг энд барина)
 app.use((err, req, res, next) => {
-  console.error("Global error handler:", err);
+  console.error("❌ Error:", err.stack);
   res.status(err.status || 500).json({
     error: "Internal Server Error",
-    message:
-      process.env.NODE_ENV === "development"
-        ? err.message
-        : "Something went wrong",
+    message: process.env.NODE_ENV === "development" ? err.message : "Алдаа гарлаа",
   });
 });
 
 const server = app.listen(PORT, () => {
-  console.log(`FoodRush API Server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
-  console.log(`API Base URL: http://localhost:${PORT}/api`);
+  console.log(`🚀 FoodRush API: http://localhost:${PORT}/api`);
 });
 
-process.on("SIGTERM", () => {
-  console.log("SIGTERM signal received: closing HTTP server");
+// Shutdown logic
+const gracefulShutdown = async (signal) => {
+  console.log(`${signal} хүлээн авлаа. Сервер хаагдаж байна...`);
   server.close(async () => {
-    console.log("HTTP server closed");
     await closePool();
     process.exit(0);
   });
-});
+};
 
-process.on("SIGINT", () => {
-  console.log("SIGINT signal received: closing HTTP server");
-  server.close(async () => {
-    console.log("HTTP server closed");
-    await closePool();
-    process.exit(0);
-  });
-});
+process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
+process.on("SIGINT", () => gracefulShutdown("SIGINT"));
 
-module.exports = app;
+export default app;
