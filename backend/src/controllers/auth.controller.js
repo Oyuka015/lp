@@ -3,7 +3,7 @@ import { validationResult } from 'express-validator';
 import { query } from '../config/database.js';
 import { generateToken } from '../middleware/auth.js';
 
-// 1. Шинэ хэрэглэгч бүртгэх
+// shine hereglegch burtgeh, nevtreh
 export const register = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

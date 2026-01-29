@@ -1,48 +1,41 @@
 import { query } from '../config/database.js';
 
-// 1. Бүх хоолыг авах
-export const getAllFoods = async (req, res) => {
+export const getAllFoods = async (req, res) =>{
     const { category, search, restaurant, minPrice, maxPrice, sort } = req.query;
     
-    let baseQuery = `
-        SELECT 
+    let baseQuery = `SELECT 
             f.id, f.name, f.description, f.price, f.image_url, f.rating, f.delivery_time,
             c.name as category_name, c.slug as category_slug, c.icon as category_icon,
             r.name as restaurant_name, r.id as restaurant_id
         FROM foods f
         LEFT JOIN categories c ON f.category_id = c.id
         LEFT JOIN restaurants r ON f.restaurant_id = r.id
-        WHERE 1=1
-    `;
+        WHERE 1=1`;
     
     const params = [];
     let paramIndex = 1;
 
-    if (category && category !== 'all') {
+    if(category && category !== 'all'){
         baseQuery += ` AND c.slug = $${paramIndex}`;
         params.push(category);
         paramIndex++;
     }
-
-    if (search) {
+    if(search){
         baseQuery += ` AND (f.name ILIKE $${paramIndex} OR f.description ILIKE $${paramIndex} OR r.name ILIKE $${paramIndex})`;
         params.push(`%${search}%`);
         paramIndex++;
     }
-
-    if (restaurant) {
+    if(restaurant){
         baseQuery += ` AND r.id = $${paramIndex}`;
         params.push(restaurant);
         paramIndex++;
     }
-
-    if (minPrice) {
+    if(minPrice){
         baseQuery += ` AND f.price >= $${paramIndex}`;
         params.push(parseFloat(minPrice));
         paramIndex++;
     }
-
-    if (maxPrice) {
+    if(maxPrice){
         baseQuery += ` AND f.price <= $${paramIndex}`;
         params.push(parseFloat(maxPrice));
         paramIndex++;
@@ -50,7 +43,7 @@ export const getAllFoods = async (req, res) => {
 
     // Sorting
     let orderBy = 'f.created_at DESC';
-    if (sort) {
+    if(sort){
         switch (sort) {
             case 'price_asc':
                 orderBy = 'f.price ASC';
@@ -70,9 +63,9 @@ export const getAllFoods = async (req, res) => {
     baseQuery += ` ORDER BY ${orderBy}`;
     const result = await query(baseQuery, params);
     
-    // Хэрэглэгч нэвтэрсэн бол хадгалсан хоолыг тэмдэглэх
+    // nevtersen hereglegchdiin hadgalsan hooluudig avah
     let savedFoodIds = [];
-    if (req.user) {
+    if(req.user){
         const savedResult = await query(
             'SELECT food_id FROM saved_foods WHERE user_id = $1',
             [req.user.id]
@@ -107,8 +100,8 @@ export const getAllFoods = async (req, res) => {
     });
 };
 
-// 2. Ганц хоолыг ID-аар авах
-export const getFoodById = async (req, res) => {
+// hooliig id-aar avah
+export const getFoodById = async (req, res) =>{
     const { id } = req.params;
 
     const result = await query(`
@@ -123,7 +116,7 @@ export const getFoodById = async (req, res) => {
         WHERE f.id = $1
     `, [id]);
 
-    if (result.rows.length === 0) {
+    if(result.rows.length === 0){
         return res.status(404).json({
             success: false,
             error: 'Food not found',
@@ -134,7 +127,7 @@ export const getFoodById = async (req, res) => {
     const food = result.rows[0];
 
     let isSaved = false;
-    if (req.user) {
+    if(req.user){
         const savedResult = await query(
             'SELECT 1 FROM saved_foods WHERE user_id = $1 AND food_id = $2',
             [req.user.id, id]
@@ -168,8 +161,8 @@ export const getFoodById = async (req, res) => {
     });
 };
 
-// 3. Категориуд авах
-export const getCategories = async (req, res) => {
+// categorY avah
+export const getCategories = async (req, res) =>{
     const result = await query(
         'SELECT id, name, slug, icon FROM categories ORDER BY name ASC'
     );
@@ -181,14 +174,14 @@ export const getCategories = async (req, res) => {
     });
 };
 
-// 4. Хадгалах / Устгах
-export const toggleSaveFood = async (req, res) => {
-    const { id } = req.params;
-    const userId = req.user.id;
+// hadgalah/ustgah
+export const toggleSaveFood = async (req, res) =>{
+    const {id}=req.params;
+    const userId=req.user.id;
 
-    // Хоол байгаа эсэхийг шалгах
+    // hool baigaa esehiig shalgah
     const foodResult = await query('SELECT id FROM foods WHERE id = $1', [id]);
-    if (foodResult.rows.length === 0) {
+    if(foodResult.rows.length === 0){
         return res.status(404).json({
             success: false,
             error: 'Food not found',
@@ -196,7 +189,7 @@ export const toggleSaveFood = async (req, res) => {
         });
     }
 
-    // Хадгалсан эсэхийг шалгах
+    // hadgalsan esehiig shalgah
     const savedResult = await query(
         'SELECT 1 FROM saved_foods WHERE user_id = $1 AND food_id = $2',
         [userId, id]
@@ -204,7 +197,7 @@ export const toggleSaveFood = async (req, res) => {
 
     let action, message;
 
-    if (savedResult.rows.length > 0) {
+    if(savedResult.rows.length > 0){
         await query(
             'DELETE FROM saved_foods WHERE user_id = $1 AND food_id = $2',
             [userId, id]
@@ -227,8 +220,8 @@ export const toggleSaveFood = async (req, res) => {
     });
 };
 
-// 5. Хадгалсан хоолнуудыг авах
-export const getSavedFoods = async (req, res) => {
+// hadgalsan hooluudig avah
+export const getSavedFoods = async (req, res) =>{
     const userId = req.user.id;
 
     const result = await query(`

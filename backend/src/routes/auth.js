@@ -23,7 +23,6 @@ const loginValidation = [
 router.post('/register', registerValidation, authCtrl.register);
 router.post('/login', loginValidation, authCtrl.login);
 
-// /me зам дээр authenticateToken ашигласнаар код илүү богино болсон
 router.get('/me', authenticateToken, authCtrl.getMe);
 
 export default router;

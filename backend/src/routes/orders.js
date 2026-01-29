@@ -5,7 +5,7 @@ import { authenticateToken } from '../middleware/auth.js';
 
 const router = express.Router();
 
-router.use(authenticateToken); // Бүх замд нэвтрэх шаардлагатай
+router.use(authenticateToken);
 
 router.get('/', orderCtrl.getOrders);
 router.get('/:id', orderCtrl.getOrderById);

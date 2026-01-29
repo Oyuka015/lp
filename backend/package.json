@@ -1,7 +1,7 @@
 {
   "name": "foodrush-backend",
   "version": "1.0.0",
-  "description": "FoodRush Food Delivery App Backend API",
+  "description": "LondonPop Delivery App Backend API",
   "main": "src/server.js",
   "type": "module",
   "scripts": {
